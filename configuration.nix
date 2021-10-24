@@ -12,6 +12,14 @@
 
   services.sshd.enable = true;
 
+  # TODO use distcc to distribute ALL builds across multiple machines ("build farm")
+  services.distccd = {
+    enable = true;
+    allowedClients = [ "127.0.0.1" "192.168.1.0/24" ];
+    openFirewall = true;
+    zeroconf = true;
+  };
+
   networking.hostName = "laptop1";
 
   nixpkgs.overlays = [ inputs.nur.overlay ];
@@ -40,9 +48,8 @@ nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
 */
 
 
+  # flakes
   nix.package = pkgs.nixUnstable; # https://nixos.wiki/wiki/Flakes
-
-
   nix.extraOptions = ''
     experimental-features = nix-command flakes
     keep-outputs = true
@@ -56,6 +63,7 @@ nix.registry.nixpkgs.flake = inputs.nixpkgs;
 
 
 # https://nixos.wiki/wiki/Distributed_build
+# TODO distcc??
         nix.buildMachines = [ {
          hostName = "laptop2";
          system = "x86_64-linux";
@@ -76,12 +84,15 @@ nix.registry.nixpkgs.flake = inputs.nixpkgs;
 networking.extraHosts =
   ''
     192.168.1.191 laptop2
-    127.0.0.1 laptop1 laptop1.lan nixos-cache.laptop1.lan nixos-cache.laptop1
-    #127.0.0.1 binarycache.nixos
+    192.168.1.179 laptop3
+    127.0.0.1 laptop1 nixos-cache.laptop1
   '';
 
 
-
+services.nix-serve = {
+  enable = true;
+  secretKeyFile = "/var/cache-priv-key.pem";
+};
 
 
   fileSystems."/" =
@@ -326,6 +337,24 @@ fonts.fonts = with pkgs; [
   ];
 
 
+# https://nixos.wiki/wiki/Binary_Cache
+# TODO ...
+services.nginx = {
+  enable = true;
+  virtualHosts = {
+    # ... existing hosts config etc. ...
+#    "binarycache.laptop1" = {
+    "nixos-cache.laptop1" = {
+      serverAliases = [ "nixos-cache" ];
+      locations."/".extraConfig = ''
+        proxy_pass http://localhost:${toString config.services.nix-serve.port};
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      '';
+    };
+  };
+};
 
 
 
