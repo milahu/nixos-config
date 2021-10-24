@@ -18,10 +18,11 @@
 
 
 nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-#"osu-lazer"
-      #"flashplayer"
-      #"vscode"
-      "cnijfilter2" # canon printer: cnijfilter2-6.10
+  #"osu-lazer"
+  #"flashplayer"
+  #"vscode"
+  "cnijfilter2" # canon printer: cnijfilter2-6.10
+  "font-bh-lucidatypewriter-75dpi" # https://github.com/NixOS/nixpkgs/issues/99014
 ];
 
 /*
@@ -253,11 +254,17 @@ i18n.extraLocaleSettings = {
 # https://nixos.wiki/wiki/Fonts
 fonts.fonts = with pkgs; [
   corefonts # microsoft core fonts: impact, ...
+
+/*
   open-sans
   noto-fonts
   #noto-fonts-cjk
   #noto-fonts-emoji
   liberation_ttf
+*/
+
+
+
   fira-code
   #fira-code-symbols
   mplus-outline-fonts

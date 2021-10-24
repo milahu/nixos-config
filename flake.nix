@@ -16,9 +16,14 @@ nixos-rebuild switch --flake .#laptop1
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/1b9dbf407cf8ab3502db9d884288de93d53351dc"; # 2021-10-03
 # use (3 weeks) old version to use binary cache
 
-inputs.nur.url = "github:nix-community/NUR/2ed3b8f5861313e9e8e8b39b1fb05f3a5a049325"; # todo update
+#inputs.nur.url = "github:nix-community/NUR/2ed3b8f5861313e9e8e8b39b1fb05f3a5a049325"; # todo update
+inputs.nur.url = "github:nix-community/NUR/f50850b1e860a87ae725bf9209fbdc6fb0a9657c";
 
-
+/*
+inputs.nur.url = "https://github.com/nix-community/NUR/commit/f50850b1e860a87ae725bf9209fbdc6fb0a9657c";
+error: input 'https://github.com/nix-community/NUR/commit/f50850b1e860a87ae725bf9209fbdc6fb0a9657c' is unsupported
+TODO parse
+*/
 
   outputs = inputs:
     /* ignore:: */ let ignoreme = ({config,lib,...}: with lib; { system.nixos.revision = mkForce null; system.nixos.versionSuffix = mkForce "pre-git"; }); in
