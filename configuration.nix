@@ -91,7 +91,8 @@ networking.extraHosts =
 
 services.nix-serve = {
   enable = true;
-  secretKeyFile = "/var/cache-priv-key.pem";
+  secretKeyFile = "/etc/nixos/nixos-cache/cache-priv-key.pem";
+  # /etc/nixos/nixos-cache/cache-pub-key.pem
 };
 
 
