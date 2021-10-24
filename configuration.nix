@@ -51,7 +51,7 @@ nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
 
 
 # pin nixpkgs in the system-wide flake registry
-nix.registry.nixpkgs.flake = nixpkgs;
+nix.registry.nixpkgs.flake = inputs.nixpkgs;
 
 
 
