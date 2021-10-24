@@ -40,6 +40,9 @@ nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
 */
 
 
+  nix.package = pkgs.nixUnstable; # https://nixos.wiki/wiki/Flakes
+
+
   nix.extraOptions = ''
     experimental-features = nix-command flakes
     keep-outputs = true
