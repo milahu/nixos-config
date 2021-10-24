@@ -17,9 +17,27 @@
   nixpkgs.overlays = [ inputs.nur.overlay ];
 
 
-    permittedUnfreePackages = [
+nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+#"osu-lazer"
+      #"flashplayer"
+      #"vscode"
+      "cnijfilter2" # canon printer: cnijfilter2-6.10
+];
+
+/*
+  nixpkgs.config = {
+    allowUnfreePredicate = (pkg: builtins.elem (builtins.parseDrvName pkg.name).name [
+      #"flashplayer"
+      #"vscode"
       "cnijfilter" # canon printer
-    ];
+    ]);
+    firefox = {
+      # constantly broken https://github.com/NixOS/nixpkgs/issues/55657
+      #enableAdobeFlash = true;
+    };
+  };
+*/
+
 
   nix.extraOptions = ''
     experimental-features = nix-command flakes
@@ -97,7 +115,8 @@ networking.extraHosts =
 
 
 
-  networking.hostName = "laptop1"; # Define your hostname.
+
+#  networking.hostName = "laptop1"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # workaround for bug in firewall.nix
