@@ -50,6 +50,9 @@ nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
   '';
 
 
+# pin nixpkgs in the system-wide flake registry
+nix.registry.nixpkgs.flake = nixpkgs;
+
 
 
 # https://nixos.wiki/wiki/Distributed_build
