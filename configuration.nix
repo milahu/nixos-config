@@ -253,7 +253,7 @@ i18n.extraLocaleSettings = {
 
 # https://nixos.wiki/wiki/Fonts
 fonts.fonts = with pkgs; [
-  corefonts # microsoft core fonts: impact, ...
+  #corefonts # microsoft core fonts: impact, ...
 
 /*
   open-sans
@@ -404,7 +404,7 @@ expect # unbuffer
 
     ark # archive manager
 p7zip
-unrar
+#unrar # unfree
 
     gwenview # image viewer
 
