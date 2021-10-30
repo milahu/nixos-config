@@ -210,10 +210,29 @@ i18n.extraLocaleSettings = {
 
   # https://nixos.wiki/wiki/Tor
   services.tor.enable = true; # slow (but secure) socks proxy on port 9050: one circuit per destination address
-  services.tor.client.enable = true; # fast (but risky) socks proxy on port 9063 for https: new circuit every 10 minutes
 
+#  services.tor.client.enable = true; # fast (but risky) socks proxy on port 9063 for https: new circuit every 10 minutes
+  services.tor.client.enable = false;
 
+services.tor.relay.onionServices = {
 
+"nix-locate" = {
+#      name = "nix-locate";
+      map = [{ port = 80; target = { port = 8080; }; }];
+      version = 3;
+      settings = {
+
+# FIXME this requires tor.client = false
+# https://github.com/NixOS/nixpkgs/pull/48625
+HiddenServiceSingleHopMode = true; # NON ANONYMOUS. use tor only for NAT punching
+HiddenServiceNonAnonymousMode = true; # TODO verify. use extraConfig?
+SocksPort = 0;
+
+#HiddenServicePort = 80; # ?
+
+};
+    };
+};
 
 
   # Enable CUPS to print documents.
