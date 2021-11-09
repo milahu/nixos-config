@@ -13,7 +13,12 @@ nixos-rebuild switch --flake .#laptop1
 */
 
   #inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-20.03"; # stable
+
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/5d517bc079f75fb400d6e9d6432938820c3013cf"; # 2021-10-24
+# TODO backport tor-insecure to 5d517bc079f75f...  inputs.nixpkgs.url = "github:milahu/nixpkgs/4d9564dcb6329193134c3b7bb439ab7cb40fc7e2"; # tor-insecure
+
+# https://github.com/NixOS/nixpkgs/pull/143875
+
 # use (3 weeks) old version to use binary cache
 
 #inputs.nur.url = "github:nix-community/NUR/2ed3b8f5861313e9e8e8b39b1fb05f3a5a049325"; # todo update

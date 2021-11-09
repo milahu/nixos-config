@@ -1,8 +1,13 @@
+# TODO move all flakes stuff to flake.nix
+#  nixpkgs.overlays = [ inputs.nur.overlay ];
+# pin nixpkgs in the system-wide flake registry
+#nix.registry.nixpkgs.flake = inputs.nixpkgs;
+
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, modulesPath, inputs, ... }:
+{ config, pkgs, lib, modulesPath, ... }:
 
 {
 
@@ -22,7 +27,6 @@
 
   networking.hostName = "laptop1";
 
-  nixpkgs.overlays = [ inputs.nur.overlay ];
 
 
 nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
@@ -57,25 +61,29 @@ nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
   '';
 
 
-# pin nixpkgs in the system-wide flake registry
-nix.registry.nixpkgs.flake = inputs.nixpkgs;
-
-
 
 # https://nixos.wiki/wiki/Distributed_build
 # TODO distcc??
-        nix.buildMachines = [ {
+     nix.buildMachines = [
+       {
          hostName = "laptop2";
          system = "x86_64-linux";
-         # if the builder supports building for multiple architectures, 
-         # replace the previous line by, e.g.,
-         # systems = ["x86_64-linux" "aarch64-linux"];
          maxJobs = 1;
          speedFactor = 2;
          supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
          mandatoryFeatures = [ ];
-        }] ;
-        nix.distributedBuilds = true;
+       }
+       {
+         hostName = "laptop3";
+         system = "x86_64-linux";
+         maxJobs = 1;
+         speedFactor = 2;
+         supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
+         mandatoryFeatures = [ ];
+       }
+     ];
+
+     nix.distributedBuilds = true;
         # optional, useful when the builder has a faster internet connection than yours
         #nix.extraOptions = ''
         #       builders-use-substitutes = true
@@ -212,16 +220,19 @@ i18n.extraLocaleSettings = {
   services.tor.enable = true; # slow (but secure) socks proxy on port 9050: one circuit per destination address
 
 #  services.tor.client.enable = true; # fast (but risky) socks proxy on port 9063 for https: new circuit every 10 minutes
-  services.tor.client.enable = false;
+  services.tor.client.enable = false; # needed for insecure services
 
+#TODO  services.tor-insecure.enable = true; # slow (but secure) socks proxy on port 9050: one circuit per destination address
+
+#TODO services.tor-insecure.relay.onionServices = {
 services.tor.relay.onionServices = {
 
 "nix-locate" = {
-#      name = "nix-locate";
       map = [{ port = 80; target = { port = 8080; }; }];
       version = 3;
       settings = {
 
+#TODO default in tor-insecure
 # FIXME this requires tor.client = false
 # https://github.com/NixOS/nixpkgs/pull/48625
 HiddenServiceSingleHopMode = true; # NON ANONYMOUS. use tor only for NAT punching
@@ -233,6 +244,8 @@ SocksPort = 0;
 };
     };
 };
+
+
 
 
   # Enable CUPS to print documents.
@@ -501,7 +514,8 @@ hunspellDicts.en_US-large
 
     mpv # video player
 
-nur.repos.milahu.svn2github
+# TODO
+#nur.repos.milahu.svn2github
 
 
     ffmpeg-full
