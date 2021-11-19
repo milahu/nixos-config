@@ -233,19 +233,32 @@ i18n.extraLocaleSettings = {
   };
 #*/
 
+/* cannot set gtk theme system-wide?
 gtk = {
   enable = true;
   font.name = "Victor Mono SemiBold 12";
   theme = {
     name = "SolArc-Dark";
     package = pkgs.solarc-gtk-theme;
-
-/*
-    name = "Adwaita-Dark";
-    package = pkgs.solarc-gtk-theme;
-*/
   };
 };
+*/
+
+# https://unix.stackexchange.com/a/633088/295986
+# https://wiki.archlinux.org/title/GTK#Configuration
+  environment.etc =
+    let
+      gtkSettings = ''
+        gtk-icon-theme-name = "Adwaita-Dark"
+        gtk-theme-name = "Adwaita-Dark"
+        gtk-font-name = "DejaVu Sans 11"
+      '';
+    in
+    {
+      "xdg/gtk-2.0/gtkrc".source = lib.writeText "gtk2-settings" gtkSettings;
+      "xdg/gtk-3.0/settings.ini".source = lib.writeText "gtk2-settings" "[Settings]\n${gtkSettings}";
+    }
+  ;
 
 fonts.fontconfig.dpi = 144; # blind people friendly :)
 
