@@ -49,11 +49,15 @@ nixos https://nixos.org/channels/nixos-21.05
           '';
           nix.package = pkgs.nixFlakes;
           nix.registry.nixpkgs.flake = inputs.nixpkgs;
-# TODO verify
+
+/* set $NIX_PATH
           nix.nixPath = [
             "nixpkgs=${inputs.nixpkgs}"
+            "nixos-config=/etc/nixos/configuration.nix"
             "${inputs.nixpkgs}/nixos"
           ];
+*/
+
 #/*
           home-manager.useGlobalPkgs = true;
 #*/
