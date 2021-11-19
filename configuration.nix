@@ -227,8 +227,8 @@ i18n.extraLocaleSettings = {
   # xfce would enable only qt4, see: env | grep QT_
   qt5 = {
     enable = true;
-    platformTheme = "gnome"; # fix: platformTheme is used but not defined
-#    style = "adwaita-dark"; # otherwise its adwaita = light mode
+    platformTheme = "gnome"; # fix: qt5.platformTheme is used but not defined
+    style = "adwaita-dark"; # fix: qt5.style is used but not defined
   };
 
 
