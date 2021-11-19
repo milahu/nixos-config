@@ -225,14 +225,29 @@ i18n.extraLocaleSettings = {
 #  services.xserver.desktopManager.cinnamon.enable = true; # would set qt5.style = "adwaita"
 
   # xfce would enable only qt4, see: env | grep QT_
-/* this breaks xfce desktop, cannot login
+#/* this breaks xfce desktop, cannot login
   qt5 = {
     enable = true;
     platformTheme = "gnome"; # fix: qt5.platformTheme is used but not defined
     style = "adwaita-dark"; # fix: qt5.style is used but not defined
   };
-*/
+#*/
 
+gtk = {
+  enable = true;
+  font.name = "Victor Mono SemiBold 12";
+  theme = {
+    name = "SolArc-Dark";
+    package = pkgs.solarc-gtk-theme;
+
+/*
+    name = "Adwaita-Dark";
+    package = pkgs.solarc-gtk-theme;
+*/
+  };
+};
+
+fonts.fontconfig.dpi = 144; # blind people friendly :)
 
 
   # https://nixos.wiki/wiki/Tor
@@ -433,6 +448,29 @@ services.nginx = {
   environment.systemPackages = with pkgs; [
 #    pkgs.nur.repos.mic92.hello-nur
 
+gnome3.adwaita-icon-theme
+
+# all gtk themes
+adapta-gtk-theme
+cde-gtk-theme
+layan-gtk-theme
+lounge-gtk-theme
+matcha-gtk-theme
+mojave-gtk-theme
+numix-gtk-theme
+numix-solarized-gtk-theme
+numix-sx-gtk-theme
+elementary-gtk-theme
+paper-gtk-theme
+pop-gtk-theme
+sierra-gtk-theme
+solarc-gtk-theme
+vimix-gtk-themes
+whitesur-gtk-theme
+
+# qt themes
+qtstyleplugin-kvantum-qt4
+libsForQt5.qtstyleplugin-kvantum
 
 
 # open lxappearance and pick your themes
