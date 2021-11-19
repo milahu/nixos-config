@@ -1,8 +1,16 @@
 /*
+
 NOTE
-all channels were removed, see
-sudo nix-channel --list
--> set NIX_PATH via nix.nixPath
+only nixpkgs are pinned to git commit
+nixos is stable channel nixos-21.05
+
+nix-channel --add https://nixos.org/channels/nixos-21.05 nixos 
+
+nix-channel --update 
+
+nix-channel --list
+nixos https://nixos.org/channels/nixos-21.05
+
 */
 
 {
