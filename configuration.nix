@@ -224,6 +224,14 @@ i18n.extraLocaleSettings = {
   services.xserver.desktopManager.xfce.enable = true;
   services.xserver.desktopManager.cinnamon.enable = true;
 
+  # xfce would enable only qt4, see: env | grep QT_
+  qt5 = {
+    enable = true;
+/*
+    platformTheme = "gnome";
+    style = "adwaita-dark";
+*/
+  };
 
 
 
