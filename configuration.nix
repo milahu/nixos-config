@@ -222,13 +222,13 @@ i18n.extraLocaleSettings = {
   services.xserver.desktopManager.plasma5.enable = true;
 
   services.xserver.desktopManager.xfce.enable = true;
-  services.xserver.desktopManager.cinnamon.enable = true;
+#  services.xserver.desktopManager.cinnamon.enable = true; # would set qt5.style = "adwaita"
 
   # xfce would enable only qt4, see: env | grep QT_
   qt5 = {
     enable = true;
-    platformTheme = "gnome";
-    style = "adwaita-dark"; # otherwise its adwaita = light mode
+#    platformTheme = "gnome";
+#    style = "adwaita-dark"; # otherwise its adwaita = light mode
   };
 
 
