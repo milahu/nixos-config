@@ -246,6 +246,9 @@ gtk = {
 
 # https://unix.stackexchange.com/a/633088/295986
 # https://wiki.archlinux.org/title/GTK#Configuration
+# TODO https://www.reddit.com/r/NixOS/comments/nryv23/comment/hl9izs6/
+# TODO https://nixos.wiki/wiki/GTK
+# TODO https://github.com/NixOS/nixpkgs/issues/13537 # gtk icon cache
   environment.etc =
     let
       gtkSettings = ''
@@ -255,12 +258,15 @@ gtk = {
       '';
     in
     {
-      "xdg/gtk-2.0/gtkrc".source = lib.writeText "gtk2-settings" gtkSettings;
-      "xdg/gtk-3.0/settings.ini".source = lib.writeText "gtk2-settings" "[Settings]\n${gtkSettings}";
+      # no effect?
+      "xdg/gtk-2.0/gtkrc".source = pkgs.writeText "gtk2-settings" gtkSettings;
+      "xdg/gtk-3.0/settings.ini".source = pkgs.writeText "gtk2-settings" "[Settings]\n${gtkSettings}";
+      "gtk-2.0/gtkrc".source = pkgs.writeText "gtk2-settings" gtkSettings;
+      "gtk-3.0/settings.ini".source = pkgs.writeText "gtk2-settings" "[Settings]\n${gtkSettings}";
     }
   ;
 
-fonts.fontconfig.dpi = 144; # blind people friendly :)
+# no effect: fonts.fontconfig.dpi = 144; # blind people friendly :)
 
 
   # https://nixos.wiki/wiki/Tor
@@ -465,7 +471,7 @@ gnome3.adwaita-icon-theme
 
 # all gtk themes
 adapta-gtk-theme
-cde-gtk-theme
+#cde-gtk-theme # broken
 layan-gtk-theme
 lounge-gtk-theme
 matcha-gtk-theme
@@ -473,7 +479,7 @@ mojave-gtk-theme
 numix-gtk-theme
 numix-solarized-gtk-theme
 numix-sx-gtk-theme
-elementary-gtk-theme
+#### missing elementary-gtk-theme
 paper-gtk-theme
 pop-gtk-theme
 sierra-gtk-theme
