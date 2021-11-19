@@ -1,3 +1,10 @@
+/*
+NOTE
+all channels were removed, see
+sudo nix-channel --list
+-> set NIX_PATH via nix.nixPath
+*/
+
 {
 
   #inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -30,6 +37,11 @@
           nix.extraOptions = "experimental-features = nix-command flakes";
           nix.package = pkgs.nixFlakes;
           nix.registry.nixpkgs.flake = inputs.nixpkgs;
+# TODO verify
+          nix.nixPath = [
+            "nixpkgs=${inputs.nixpkgs}"
+            "${inputs.nixpkgs}/nixos"
+          ];
 #/*
           home-manager.useGlobalPkgs = true;
 #*/
