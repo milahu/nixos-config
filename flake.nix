@@ -42,7 +42,11 @@ nixos https://nixos.org/channels/nixos-21.05
 #*/
 
         ({ pkgs, ... }: {
-          nix.extraOptions = "experimental-features = nix-command flakes";
+          nix.extraOptions = ''
+            experimental-features = nix-command flakes
+            keep-outputs = true
+            keep-derivations = true
+          '';
           nix.package = pkgs.nixFlakes;
           nix.registry.nixpkgs.flake = inputs.nixpkgs;
 # TODO verify
