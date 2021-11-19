@@ -221,15 +221,17 @@ i18n.extraLocaleSettings = {
 
   services.xserver.desktopManager.plasma5.enable = true;
 
-  services.xserver.desktopManager.xfce.enable = true;
+#  services.xserver.desktopManager.xfce.enable = true;
 #  services.xserver.desktopManager.cinnamon.enable = true; # would set qt5.style = "adwaita"
 
   # xfce would enable only qt4, see: env | grep QT_
+/* this breaks xfce desktop, cannot login
   qt5 = {
     enable = true;
     platformTheme = "gnome"; # fix: qt5.platformTheme is used but not defined
     style = "adwaita-dark"; # fix: qt5.style is used but not defined
   };
+*/
 
 
 
