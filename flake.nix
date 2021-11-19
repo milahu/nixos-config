@@ -5,12 +5,12 @@
 
   inputs.nur.url = "github:nix-community/NUR/f50850b1e860a87ae725bf9209fbdc6fb0a9657c";
 
-/*
+#/*
   #inputs.home-manager.url = "github:nix-community/home-manager/master";
   inputs.home-manager.url = "github:nix-community/home-manager/2452979efe92128b03e3c27567267066c2825fab"; # 2021-11-19
 
   inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
-*/
+#*/
 
   outputs = inputs: {
 
@@ -22,17 +22,17 @@
         inherit inputs;
       };
       modules = [
-/*
+#/*
         inputs.home-manager.nixosModules.home-manager
-*/
+#*/
 
         ({ pkgs, ... }: {
           nix.extraOptions = "experimental-features = nix-command flakes";
           nix.package = pkgs.nixFlakes;
           nix.registry.nixpkgs.flake = inputs.nixpkgs;
-/*
+#/*
           home-manager.useGlobalPkgs = true;
-*/
+#*/
         })
 
         ./configuration.nix
