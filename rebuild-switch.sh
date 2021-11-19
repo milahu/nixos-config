@@ -2,4 +2,6 @@
 
 cd "$(dirname "$0")"
 
-nixos-rebuild switch --flake .#$(hostname)
+#sudo nixos-rebuild switch --flake .#$(hostname) # not needed?
+
+sudo nixos-rebuild switch

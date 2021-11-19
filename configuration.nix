@@ -52,19 +52,24 @@ nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
 */
 
 
+/* moved to flake.nix
   # flakes
   nix.package = pkgs.nixUnstable; # https://nixos.wiki/wiki/Flakes
   nix.extraOptions = ''
     experimental-features = nix-command flakes
+  '';
+*/
+
+/*
     keep-outputs = true
     keep-derivations = true
-  '';
-
+*/
 
 
 # https://nixos.wiki/wiki/Distributed_build
 # TODO distcc??
      nix.buildMachines = [
+#/xx* laut
        {
          hostName = "laptop2";
          system = "x86_64-linux";
@@ -73,6 +78,8 @@ nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
          supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
          mandatoryFeatures = [ ];
        }
+#*/
+/* fan error -> not booting
        {
          hostName = "laptop3";
          system = "x86_64-linux";
@@ -81,6 +88,7 @@ nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
          supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
          mandatoryFeatures = [ ];
        }
+*/
      ];
 
      nix.distributedBuilds = true;
@@ -210,8 +218,11 @@ i18n.extraLocaleSettings = {
 # === KDE SDDM ===
 
   services.xserver.displayManager.sddm.enable = true;
+
   services.xserver.desktopManager.plasma5.enable = true;
 
+  services.xserver.desktopManager.xfce.enable = true;
+  services.xserver.desktopManager.cinnamon.enable = true;
 
 
 
@@ -219,12 +230,14 @@ i18n.extraLocaleSettings = {
   # https://nixos.wiki/wiki/Tor
   services.tor.enable = true; # slow (but secure) socks proxy on port 9050: one circuit per destination address
 
-#  services.tor.client.enable = true; # fast (but risky) socks proxy on port 9063 for https: new circuit every 10 minutes
-  services.tor.client.enable = false; # needed for insecure services
+  services.tor.client.enable = true; # fast (but risky) socks proxy on port 9063 for https: new circuit every 10 minutes
+#  services.tor.client.enable = false; # needed for insecure services
 
 #TODO  services.tor-insecure.enable = true; # slow (but secure) socks proxy on port 9050: one circuit per destination address
 
 #TODO services.tor-insecure.relay.onionServices = {
+
+/*
 services.tor.relay.onionServices = {
 
 "nix-locate" = {
@@ -244,7 +257,7 @@ SocksPort = 0;
 };
     };
 };
-
+*/
 
 
 
@@ -294,6 +307,7 @@ SocksPort = 0;
       "wheel" # Enable ‘sudo’ for the user.
       "docker" # WARNING the docker group membership is effectively equivalent to being root! https://github.com/moby/moby/issues/9976
       "dialout" # arduino programming
+      "cdrom" # burn cd/dvd
     ];
   };
 
@@ -511,6 +525,7 @@ hunspellDicts.en_US-large
 #nixpkgs-2021-04-19.tor-browser-bundle-bin
 #tor-browser-bundle-bin
 
+tor-browser-bundle-bin
 
     mpv # video player
 
@@ -537,6 +552,9 @@ sox
 
 kate
 
+qtcurve # qt themes
+qt5ct # qtcontrol for qt5
+breeze-qt5 # breeze-dark theme?
 
     libdeflate
     zlib

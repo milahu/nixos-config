@@ -1,50 +1,43 @@
-/*
-nixos-rebuild switch --flake .#laptop1 
-*/
-
 {
-  description = "An example NixOS configuration";
 
-/*
-  inputs = {
-    nixpkgs = { url = "github:nixos/nixpkgs/nixos-unstable"; };
-    nur = { url = "github:nix-community/NUR"; };
-  };
-*/
-
-  #inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-20.03"; # stable
-
+  #inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/5d517bc079f75fb400d6e9d6432938820c3013cf"; # 2021-10-24
-# TODO backport tor-insecure to 5d517bc079f75f...  inputs.nixpkgs.url = "github:milahu/nixpkgs/4d9564dcb6329193134c3b7bb439ab7cb40fc7e2"; # tor-insecure
 
-# https://github.com/NixOS/nixpkgs/pull/143875
-
-# use (3 weeks) old version to use binary cache
-
-#inputs.nur.url = "github:nix-community/NUR/2ed3b8f5861313e9e8e8b39b1fb05f3a5a049325"; # todo update
-inputs.nur.url = "github:nix-community/NUR/f50850b1e860a87ae725bf9209fbdc6fb0a9657c";
+  inputs.nur.url = "github:nix-community/NUR/f50850b1e860a87ae725bf9209fbdc6fb0a9657c";
 
 /*
-inputs.nur.url = "https://github.com/nix-community/NUR/commit/f50850b1e860a87ae725bf9209fbdc6fb0a9657c";
-error: input 'https://github.com/nix-community/NUR/commit/f50850b1e860a87ae725bf9209fbdc6fb0a9657c' is unsupported
-TODO parse
+  #inputs.home-manager.url = "github:nix-community/home-manager/master";
+  inputs.home-manager.url = "github:nix-community/home-manager/2452979efe92128b03e3c27567267066c2825fab"; # 2021-11-19
+
+  inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
 */
 
-  outputs = inputs:
-    /* ignore:: */ let ignoreme = ({config,lib,...}: with lib; { system.nixos.revision = mkForce null; system.nixos.versionSuffix = mkForce "pre-git"; }); in
-  {
-    nixosConfigurations = {
+  outputs = inputs: {
 
-      laptop1 = inputs.nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./configuration.nix
-
-          /* ignore */ ignoreme # ignore this; don't include it; it is a small helper for this example
-        ];
-        specialArgs = { inherit inputs; };
+    nixosConfigurations.laptop1 = inputs.nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      # Things in this set are passed to modules and accessible
+      # in the top-level arguments (e.g. `{ pkgs, lib, inputs, ... }:`).
+      specialArgs = {
+        inherit inputs;
       };
+      modules = [
+/*
+        inputs.home-manager.nixosModules.home-manager
+*/
+
+        ({ pkgs, ... }: {
+          nix.extraOptions = "experimental-features = nix-command flakes";
+          nix.package = pkgs.nixFlakes;
+          nix.registry.nixpkgs.flake = inputs.nixpkgs;
+/*
+          home-manager.useGlobalPkgs = true;
+*/
+        })
+
+        ./configuration.nix
+      ];
     };
+
   };
 }
-
