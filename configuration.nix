@@ -219,9 +219,9 @@ i18n.extraLocaleSettings = {
 
   services.xserver.displayManager.sddm.enable = true;
 
-  services.xserver.desktopManager.plasma5.enable = true;
+#  services.xserver.desktopManager.plasma5.enable = true; # broken since setting dpi to 144 ... login hangs with black screen
 
-#  services.xserver.desktopManager.xfce.enable = true;
+  services.xserver.desktopManager.xfce.enable = true;
 #  services.xserver.desktopManager.cinnamon.enable = true; # would set qt5.style = "adwaita"
 
   # xfce would enable only qt4, see: env | grep QT_
