@@ -33,6 +33,7 @@ nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
   #"osu-lazer"
   #"flashplayer"
   #"vscode"
+  "brgenml1lpr" # brother printer
   "cnijfilter2" # canon printer: cnijfilter2-6.10
   "font-bh-lucidatypewriter-75dpi" # https://github.com/NixOS/nixpkgs/issues/99014
 ];
