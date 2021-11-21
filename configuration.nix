@@ -244,6 +244,23 @@ gtk = {
 };
 */
 
+/*
+[Settings]
+gtk-application-prefer-dark-theme=true
+gtk-button-images=true
+gtk-cursor-theme-name=breeze_cursors
+gtk-cursor-theme-size=24
+gtk-decoration-layout=icon:minimize,maximize,close
+gtk-enable-animations=true
+gtk-font-name=Noto Sans,  10
+gtk-icon-theme-name=breeze-dark
+gtk-menu-images=true
+gtk-primary-button-warps-slider=false
+gtk-toolbar-style=3
+
+        gtk-icon-theme-name = "Adwaita-Dark"
+        gtk-theme-name = "Adwaita-Dark"
+*/
 # https://unix.stackexchange.com/a/633088/295986
 # https://wiki.archlinux.org/title/GTK#Configuration
 # TODO https://www.reddit.com/r/NixOS/comments/nryv23/comment/hl9izs6/
@@ -252,19 +269,16 @@ gtk = {
   environment.etc =
     let
       gtkSettings = ''
-        gtk-icon-theme-name = "Adwaita-Dark"
-        gtk-theme-name = "Adwaita-Dark"
+        gtk-application-prefer-dark-theme = "true"
         gtk-font-name = "DejaVu Sans 11"
       '';
     in
     {
       # no effect?
       "xdg/gtk-2.0/gtkrc".source = pkgs.writeText "gtk2-settings" gtkSettings;
-      "xdg/gtk-3.0/settings.ini".source = pkgs.writeText "gtk2-settings" "[Settings]\n${gtkSettings}";
-      "gtk-2.0/gtkrc".source = pkgs.writeText "gtk2-settings" gtkSettings;
-      "gtk-3.0/settings.ini".source = pkgs.writeText "gtk2-settings" "[Settings]\n${gtkSettings}";
-    }
-  ;
+      "xdg/gtk-3.0/settings.ini".source = pkgs.writeText "gtk3-settings" "[Settings]\n${gtkSettings}";
+      "xdg/gtk-4.0/settings.ini".source = pkgs.writeText "gtk4-settings" "[Settings]\n${gtkSettings}";
+    };
 
 # no effect: fonts.fontconfig.dpi = 144; # blind people friendly :)
 
@@ -309,7 +323,7 @@ SocksPort = 0;
     pkgs.gutenprint pkgs.gutenprintBin # canon etc
     #pkgs.hplip pkgs.hplipWithPlugin # hp
     #pkgs.samsungUnifiedLinuxDriver pkgs.splix # samsung
-    #pkgs.brlaser pkgs.brgenml1lpr # brother
+    pkgs.brlaser pkgs.brgenml1lpr # brother
 
 # TODO verify
     pkgs.cnijfilter2 # filter program for canon pixma g5050, etc
