@@ -18,7 +18,7 @@ nixos https://nixos.org/channels/nixos-21.05
   #inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   inputs.nixpkgs.url = "github:NixOS/nixpkgs/5d517bc079f75fb400d6e9d6432938820c3013cf"; # 2021-10-24
 
-  inputs.nur.url = "github:nix-community/NUR/f50850b1e860a87ae725bf9209fbdc6fb0a9657c";
+  inputs.nur.url = "github:nix-community/NUR/fc0758e2f8aa4dac7c4ab42860f07487b1dcadea"; # 2021-11-21
 
 #/*
   #inputs.home-manager.url = "github:nix-community/home-manager/master";
@@ -64,6 +64,24 @@ nixos https://nixos.org/channels/nixos-21.05
         })
 
         ./configuration.nix
+
+        { nixpkgs.overlays = [ nur.overlay ]; }
+
+/* TODO
+{
+  packageOverrides = pkgs: {
+    nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+      inherit pkgs;
+      repoOverrides = {
+        mic92 = import ../nur-packages { inherit pkgs; };
+        ## remote locations are also possible:
+        # mic92 = import (builtins.fetchTarball "https://github.com/your-user/nur-packages/archive/master.tar.gz") { inherit pkgs; };
+      };
+    };
+  };
+}
+*/
+
       ];
     };
 
