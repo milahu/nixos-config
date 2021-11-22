@@ -65,7 +65,7 @@ nixos https://nixos.org/channels/nixos-21.05
 
         ./configuration.nix
 
-        { nixpkgs.overlays = [ nur.overlay ]; }
+#### FIXME        { nixpkgs.overlays = [ nur.overlay ]; }
 
 /* TODO
 {

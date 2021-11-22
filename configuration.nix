@@ -321,15 +321,21 @@ SocksPort = 0;
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
-  services.printing.drivers = [
+  services.printing.drivers =
+  let
+    # TODO:    nur.repos.milahu.brother-hll3210cw # brother HL-L3210CW
+    brother-hll3210cw = (pkgs.callPackage /home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/brother-hll3210cw/default.nix { });
+  in
+  [
     pkgs.gutenprint pkgs.gutenprintBin # canon etc
     #pkgs.hplip pkgs.hplipWithPlugin # hp
     #pkgs.samsungUnifiedLinuxDriver pkgs.splix # samsung
 
     pkgs.brlaser # brother
+    brother-hll3210cw
     #pkgs.brgenml1lpr # brother
-# TODO:    nur.repos.milahu.brother-hll3210cw # brother HL-L3210CW
-(pkgs.callPackage /home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/brother-hll3210cw/default.nix { })
+
+    cups-kyocera-ecosys-m552x-p502x # kyocera p5021cdn
 
     pkgs.cnijfilter2 # filter program for canon pixma g5050, etc
     #nixpkgs-2021-04-19.cnijfilter2 # filter program for canon pixma g5050, etc
