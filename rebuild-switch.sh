@@ -13,6 +13,8 @@
 opts='--impure' # allow acces to /home
 #opts='--builders ""'
 
+#opts+=' --flake /home/user/src/nixos/nixos-config'
+
 echo "maybe run:"
 echo "nix-store --verify --repair"
 echo "... to fix store after writable-nix-store.js"
