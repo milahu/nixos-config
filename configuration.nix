@@ -1,6 +1,7 @@
 # TODO use only 2 of 4 cores for nix-build, to make laptop more quiet
 
 # m was here :)
+#asf
 
 # TODO move all flakes stuff to flake.nix
 #  nixpkgs.overlays = [ inputs.nur.overlay ];
@@ -31,27 +32,27 @@
 
     (pkgz: pkgs: {
       #proftpd = pkgs.callPackage ./pkgs/proftpd/proftpd.nix { };
-      proftpd = pkgs.callPackage /home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/proftpd/nixpkgs/pkgs/servers/ftp/proftpd/default.nix {};
-#      jdownloader = pkgs.callPackage /home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/jdownloader {};
+      proftpd = pkgs.callPackage /home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/proftpd/nixpkgs/pkgs/servers/ftp/proftpd/default.nix { };
+      #      jdownloader = pkgs.callPackage /home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/jdownloader {};
 
-/*
-      firejail = pkgs.firejail.overrideAttrs (old: {
+      /*
+        firejail = pkgs.firejail.overrideAttrs (old: {
         #propagatedBuildInputs = old.propagatedBuildInputs ++ [ pkgs.iptables ];
         propagatedBuildInputs = [ pkgz.iptables pkgz.xorg.xauth pkgz.coreutils ];
         #src = /home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/jdownloader/src/firejail; # debug
         # intentionally without doublequotes, to also replace unquoted strings in printf format strings
         postPatch = ''
-          # TODO automate patching of FHS binary paths
-          sed -i 's|/sbin/iptables|${pkgz.iptables}/bin/iptables|' src/firejail/netfilter.c
-          sed -i 's|/usr/bin/xauth|${pkgz.xorg.xauth}/bin/xauth|' src/firejail/x11.c
-          #sed -i 's|/usr/bin/coreutils|${pkgz.coreutils}/bin/coreutils|' src/firejail/x11.c
+        # TODO automate patching of FHS binary paths
+        sed -i 's|/sbin/iptables|${pkgz.iptables}/bin/iptables|' src/firejail/netfilter.c
+        sed -i 's|/usr/bin/xauth|${pkgz.xorg.xauth}/bin/xauth|' src/firejail/x11.c
+        #sed -i 's|/usr/bin/coreutils|${pkgz.coreutils}/bin/coreutils|' src/firejail/x11.c
         '';
-      });
-*/
+        });
+      */
 
       youtube-dl = pkgs.youtube-dl.overrideAttrs (old: {
         # fix: Unable to extract Initial JS player n function name
-        patches = [];
+        patches = [ ];
         version = "unstable-2022-05-10"; # not used 0__o
         src = pkgz.fetchFromGitHub {
           owner = "ytdl-org";
@@ -64,42 +65,42 @@
 
     })
 
-# no effect??
-# has effect only on nixos modules? (but not on system env packges)
+    # no effect??
+    # has effect only on nixos modules? (but not on system env packges)
     (pkgz: pkgs: {
 
-/*
-      gstreamermm = pkgs.gstreamermm.overrideAttrs (old: {
+      /*
+        gstreamermm = pkgs.gstreamermm.overrideAttrs (old: {
         # https://github.com/NixOS/nixpkgs/pull/171274
         #patches = [ ./gstreamermm-fix-build.patch ];
-  # https://github.com/NixOS/nixpkgs/tree/master/pkgs/development/libraries/gstreamer/gstreamermm/default.nix
-  pname = "gstreamermm";
-  version = "unstable-2021-09-15";
-  src = pkgz.fetchFromGitLab {
-    domain = "gitlab.gnome.org";
-    #group = "gnome";
-    owner = "GNOME";
-    repo = "gstreamermm";
-    rev = "dfd80ddb4eac02ae6c48a076a9cd9a1dc9e7bed2";
-    sha256 = "sha256-4VwVyu0RzvtsTq/UWZ3//KCY0qxfMrdqDCpMnEGe9YA=";
-  };
-      });
-*/
+        # https://github.com/NixOS/nixpkgs/tree/master/pkgs/development/libraries/gstreamer/gstreamermm/default.nix
+        pname = "gstreamermm";
+        version = "unstable-2021-09-15";
+        src = pkgz.fetchFromGitLab {
+        domain = "gitlab.gnome.org";
+        #group = "gnome";
+        owner = "GNOME";
+        repo = "gstreamermm";
+        rev = "dfd80ddb4eac02ae6c48a076a9cd9a1dc9e7bed2";
+        sha256 = "sha256-4VwVyu0RzvtsTq/UWZ3//KCY0qxfMrdqDCpMnEGe9YA=";
+        };
+        });
+      */
 
-/* subtitleeditor (not needed any more)
-      gstreamermm = pkgs.gstreamermm.overrideAttrs (old: {
+      /* subtitleeditor (not needed any more)
+        gstreamermm = pkgs.gstreamermm.overrideAttrs (old: {
         # https://github.com/NixOS/nixpkgs/pull/171274
 
-  # https://github.com/NixOS/nixpkgs/pull/171274#issuecomment-1119011973
-  patches = [
-    # For GCC11 compatibility.
-    (pkgz.fetchpatch {
-      url = "https://gitlab.gnome.org/GNOME/gstreamermm/-/commit/37116547fb5f9066978e39b4cf9f79f2154ad425.patch";
-      sha256 = "sha256-YHtmOiOl4POwas3eWHsew3IyGK7Aq22MweBm3JPwyBM=";
-    })
-  ];
-      });
-*/
+        # https://github.com/NixOS/nixpkgs/pull/171274#issuecomment-1119011973
+        patches = [
+        # For GCC11 compatibility.
+        (pkgz.fetchpatch {
+        url = "https://gitlab.gnome.org/GNOME/gstreamermm/-/commit/37116547fb5f9066978e39b4cf9f79f2154ad425.patch";
+        sha256 = "sha256-YHtmOiOl4POwas3eWHsew3IyGK7Aq22MweBm3JPwyBM=";
+        })
+        ];
+        });
+      */
     })
 
   ]; # nixpkgs.overlays
@@ -107,161 +108,163 @@
 
   # Override select packages to use the unstable channel
   nixpkgs.config.packageOverrides = pkgs: rec {
-  #nixpkgs.config.packageOverrides = pkgs: let final = pkgs.pkgs; in { # pkgs/final = prev/final = super/self
+    #nixpkgs.config.packageOverrides = pkgs: let final = pkgs.pkgs; in { # pkgs/final = prev/final = super/self
   }; # packageOverrides
 
 
-# dont build nixos-manual-html (etc)
-documentation.doc.enable = false;
-documentation.nixos.enable = false;
+  # dont build nixos-manual-html (etc)
+  documentation.doc.enable = false;
+  documentation.nixos.enable = false;
 
 
   services.sshd.enable = true;
 
-# nixpkgs/nixos/modules/services/databases/postgresql.nix
-# nixpkgs/pkgs/servers/sql/postgresql
-services.postgresql = {
-enable = true;
-package = pkgs.postgresql;
-#extraPlugins = with pkgs.postgresql.pkgs; [ ];
-# map-name system-username database-username
-identMap = ''
-  idmap1 user user
-'';
-};
+  # nixpkgs/nixos/modules/services/databases/postgresql.nix
+  # nixpkgs/pkgs/servers/sql/postgresql
+  services.postgresql = {
+    enable = true;
+    package = pkgs.postgresql;
+    #extraPlugins = with pkgs.postgresql.pkgs; [ ];
+    # map-name system-username database-username
+    identMap = ''
+      idmap1 user user
+    '';
+  };
 
-/*
-  # TODO use distcc to distribute ALL builds across multiple machines ("build farm")
-  services.distccd = {
+  /*
+    # TODO use distcc to distribute ALL builds across multiple machines ("build farm")
+    services.distccd = {
     enable = true;
     allowedClients = [ "127.0.0.1" "192.168.1.0/24" ];
     openFirewall = true;
     zeroconf = true;
-  };
-*/
+    };
+  */
 
   networking.hostName = "laptop1";
 
 
 
-/* replaced with tigervnc
-              nixpkgs.config.permittedInsecurePackages = [
-                "tightvnc-1.3.10"
-              ];
-*/
+  /* replaced with tigervnc
+    nixpkgs.config.permittedInsecurePackages = [
+    "tightvnc-1.3.10"
+    ];
+  */
 
-              nixpkgs.config.permittedInsecurePackages = [
-                "nodejs-12.22.12" # TODO who needs nodejs 12? pkgs.nodejs-12_x
-              ];
+  nixpkgs.config.permittedInsecurePackages = [
+    "nodejs-12.22.12" # TODO who needs nodejs 12? pkgs.nodejs-12_x
+  ];
 
 
-nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
-  #"osu-lazer"
-  #"flashplayer"
-  #"vscode" # -> vscodium
-  "unrar"
-  "brgenml1lpr" # brother printer
-  "brother-hll3210cw" # brother printer
-  "cups-kyocera-ecosys-m552x-p502x" # kyocera p5021cdn printer
-  "cnijfilter2" # canon printer: cnijfilter2-6.10
-  "font-bh-lucidatypewriter-75dpi" # https://github.com/NixOS/nixpkgs/issues/99014
-];
+  nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
+    #"osu-lazer"
+    #"flashplayer"
+    #"vscode" # -> vscodium
+    "unrar"
+    "brgenml1lpr" # brother printer
+    "brother-hll3210cw" # brother printer
+    "cups-kyocera-ecosys-m552x-p502x" # kyocera p5021cdn printer
+    "cnijfilter2" # canon printer: cnijfilter2-6.10
+    "font-bh-lucidatypewriter-75dpi" # https://github.com/NixOS/nixpkgs/issues/99014
+  ];
 
-/*
-  nixpkgs.config = {
+  /*
+    nixpkgs.config = {
     allowUnfreePredicate = (pkg: builtins.elem (builtins.parseDrvName pkg.name).name [
-      #"flashplayer"
-      #"vscode"
-      "cnijfilter" # canon printer
+    #"flashplayer"
+    #"vscode"
+    "cnijfilter" # canon printer
     ]);
     firefox = {
-      # constantly broken https://github.com/NixOS/nixpkgs/issues/55657
-      #enableAdobeFlash = true;
+    # constantly broken https://github.com/NixOS/nixpkgs/issues/55657
+    #enableAdobeFlash = true;
     };
-  };
-*/
+    };
+  */
 
 
-/* moved to flake.nix
-  # flakes
-  nix.package = pkgs.nixUnstable; # https://nixos.wiki/wiki/Flakes
-  nix.extraOptions = ''
+  /* moved to flake.nix
+    # flakes
+    nix.package = pkgs.nixUnstable; # https://nixos.wiki/wiki/Flakes
+    nix.extraOptions = ''
     experimental-features = nix-command flakes
-  '';
-*/
+    '';
+  */
 
-/*
+  /*
     keep-outputs = true
     keep-derivations = true
-*/
+  */
 
 
-# https://nixos.wiki/wiki/Distributed_build
-# TODO distcc??
-#     nix.buildMachines = if false then [
-     nix.buildMachines = if false then [
-#/xx* laut
-       {
-         #hostName = "laptop2";
-         hostName = "jonringer"; # /home/user/.ssh/config
-         # TODO port = 2222;
+  # https://nixos.wiki/wiki/Distributed_build
+  # TODO distcc??
+  #     nix.buildMachines = if false then [
+  nix.buildMachines =
+    if false then [
+      #/xx* laut
+      {
+        #hostName = "laptop2";
+        hostName = "jonringer"; # /home/user/.ssh/config
+        # TODO port = 2222;
 
-         system = "x86_64-linux";
-         maxJobs = 1;
-         #speedFactor = 2;
-         speedFactor = 40; # 30x faster than laptop2
-         supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
-         mandatoryFeatures = [ ];
-       }
-#*/
-/* fan error -> not booting
-       {
-         hostName = "laptop3";
-         system = "x86_64-linux";
-         maxJobs = 1;
-         speedFactor = 2;
-         supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
-         mandatoryFeatures = [ ];
-       }
-*/
-     ] else [];
+        system = "x86_64-linux";
+        maxJobs = 1;
+        #speedFactor = 2;
+        speedFactor = 40; # 30x faster than laptop2
+        supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
+        mandatoryFeatures = [ ];
+      }
+      #*/
+      /* fan error -> not booting
+        {
+        hostName = "laptop3";
+        system = "x86_64-linux";
+        maxJobs = 1;
+        speedFactor = 2;
+        supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
+        mandatoryFeatures = [ ];
+        }
+      */
+    ] else [ ];
 
-     nix.distributedBuilds = true;
-        # optional, useful when the builder has a faster internet connection than yours
-        #nix.extraOptions = ''
-        #       builders-use-substitutes = true
-        #'';
+  nix.distributedBuilds = true;
+  # optional, useful when the builder has a faster internet connection than yours
+  #nix.extraOptions = ''
+  #       builders-use-substitutes = true
+  #'';
 
-networking.extraHosts =
-  ''
-    192.168.1.191 laptop2
-    192.168.1.179 laptop3
-    127.0.0.1 laptop1 nixos-cache.laptop1
+  networking.extraHosts =
+    ''
+      192.168.1.191 laptop2
+      192.168.1.179 laptop3
+      127.0.0.1 laptop1 nixos-cache.laptop1
 
-    73.157.50.82 jonringer
-  '';
+      73.157.50.82 jonringer
+    '';
 
 
-services.nix-serve = {
-  enable = true;
-  secretKeyFile = "/etc/nixos/nixos-cache/cache-priv-key.pem";
-  # /etc/nixos/nixos-cache/cache-pub-key.pem
-};
+  services.nix-serve = {
+    enable = true;
+    secretKeyFile = "/etc/nixos/nixos-cache/cache-priv-key.pem";
+    # /etc/nixos/nixos-cache/cache-pub-key.pem
+  };
 
 
   fileSystems."/" =
-  {
-# TODO inherit device UUID from ,/hardware-configuration.nix
-    #device = "/dev/disk/by-uuid/2e0a16b9-e026-4e69-8640-a2b2ce6d45bf"; # old SSD (240 GB)
-    device = "/dev/disk/by-uuid/141c3965-7393-4459-ab03-ae90173d984f";
-    fsType = "ext4";
-    options = [
-      "rw"
-      "data=ordered" # faster than journal, slower than writeback
-      #"relatime" # slower than noatime, update atime only after file was modified
-      "noatime" "nodiratime" # dont write access time -> faster
-    ];
-  };
+    {
+      # TODO inherit device UUID from ,/hardware-configuration.nix
+      #device = "/dev/disk/by-uuid/2e0a16b9-e026-4e69-8640-a2b2ce6d45bf"; # old SSD (240 GB)
+      device = "/dev/disk/by-uuid/141c3965-7393-4459-ab03-ae90173d984f";
+      fsType = "ext4";
+      options = [
+        "rw"
+        "data=ordered" # faster than journal, slower than writeback
+        #"relatime" # slower than noatime, update atime only after file was modified
+        "noatime"
+        "nodiratime" # dont write access time -> faster
+      ];
+    };
 
 
 
@@ -328,15 +331,15 @@ services.nix-serve = {
   ];
 
   services.upower.enable = true;
-  powerManagement = { 
-    enable = true; 
-    cpuFreqGovernor = "powersave"; 
+  powerManagement = {
+    enable = true;
+    cpuFreqGovernor = "powersave";
     #cpufreq.max = "800MHz"; # cpupower frequency-set --max $max
     cpufreq.max = 1600 * 1000; # KHz # cpupower frequency-set --max $max
-  # $ cpupower frequency-info
-  # analyzing CPU 0:
-  #   driver: intel_cpufreq
-  #   hardware limits: 800 MHz - 3.20 GHz
+    # $ cpupower frequency-info
+    # analyzing CPU 0:
+    #   driver: intel_cpufreq
+    #   hardware limits: 800 MHz - 3.20 GHz
   };
   powerManagement.powertop.enable = true;
   #services.thermald.enable = true; # FIXME build error
@@ -355,13 +358,13 @@ services.nix-serve = {
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
 
-# locale
-i18n.defaultLocale = "en_US.UTF-8";
-i18n.extraLocaleSettings = {
-  LC_MESSAGES = "en_US.UTF-8";
-  LC_TIME = "de_DE.UTF-8";
-  LC_CTYPE = "en_US.UTF-8";
-};
+  # locale
+  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.extraLocaleSettings = {
+    LC_MESSAGES = "en_US.UTF-8";
+    LC_TIME = "de_DE.UTF-8";
+    LC_CTYPE = "en_US.UTF-8";
+  };
 
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
@@ -409,162 +412,162 @@ i18n.extraLocaleSettings = {
   #services.xserver.displayManager.autoLogin.user = "user";
 
 
-# === KDE SDDM ===
+  # === KDE SDDM ===
 
-# kde login
-services.xserver.displayManager.sddm.enable = true;
+  # kde login
+  services.xserver.displayManager.sddm.enable = true;
 
-# kde desktop
-# breaks GTK apps: inkscape evolution
-services.xserver.desktopManager.plasma5.enable = true;
-# broken since setting dpi to 144 ... login hangs with black screen
+  # kde desktop
+  # breaks GTK apps: inkscape evolution
+  services.xserver.desktopManager.plasma5.enable = true;
+  # broken since setting dpi to 144 ... login hangs with black screen
 
-# xfce desktop
-# FIXME keeps crashing over night
-# in the morning, i have a black screen
-# and must restart the display-manager.service
-# -> kde plasma
-#services.xserver.desktopManager.xfce.enable = true;
+  # xfce desktop
+  # FIXME keeps crashing over night
+  # in the morning, i have a black screen
+  # and must restart the display-manager.service
+  # -> kde plasma
+  #services.xserver.desktopManager.xfce.enable = true;
 
-# gnome login
-# broken: display-manager.service hangs at "starting X11 server..."
-#services.xserver.displayManager.gdm.enable = true;
+  # gnome login
+  # broken: display-manager.service hangs at "starting X11 server..."
+  #services.xserver.displayManager.gdm.enable = true;
 
-# gnome desktop
-# gnome is still gay.
-# gnome is still SHIT. gnome-shell still has a memory leak -> needs 2.6 GByte RAM after some days of uptime
-# cannot scale display to 150% (only 100% or 200%)
-# terminal is gay (cannot rename tabs)
-# -> back to kde
-#services.xserver.desktopManager.gnome.enable = true;
+  # gnome desktop
+  # gnome is still gay.
+  # gnome is still SHIT. gnome-shell still has a memory leak -> needs 2.6 GByte RAM after some days of uptime
+  # cannot scale display to 150% (only 100% or 200%)
+  # terminal is gay (cannot rename tabs)
+  # -> back to kde
+  #services.xserver.desktopManager.gnome.enable = true;
 
-# gnome
-/*
-environment.gnome.excludePackages = (with pkgs; [
-  gnome-photos
-  gnome-tour
-]) ++ (with pkgs.gnome; [
-  cheese
-  gnome-music
-  #gnome-terminal
-  gedit
-  epiphany
-  #evince
-  gnome-characters
-  totem
-  tali
-  iagno
-  hitori
-  atomix
-  geary
-]);
-*/
-
-
-# gnome
-# fix:  dconf-WARNING **: failed to commit changes to dconf: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name ca.desrt.dconf was not provided by any .service files
-#programs.dconf.enable = true;
-
-# gnome
-#services.udev.packages = with pkgs; [ gnome3.gnome-settings-daemon ];
+  # gnome
+  /*
+    environment.gnome.excludePackages = (with pkgs; [
+    gnome-photos
+    gnome-tour
+    ]) ++ (with pkgs.gnome; [
+    cheese
+    gnome-music
+    #gnome-terminal
+    gedit
+    epiphany
+    #evince
+    gnome-characters
+    totem
+    tali
+    iagno
+    hitori
+    atomix
+    geary
+    ]);
+  */
 
 
+  # gnome
+  # fix:  dconf-WARNING **: failed to commit changes to dconf: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name ca.desrt.dconf was not provided by any .service files
+  #programs.dconf.enable = true;
 
-# cinnamon desktop
-#  services.xserver.desktopManager.cinnamon.enable = true; # would set qt5.style = "adwaita"
+  # gnome
+  #services.udev.packages = with pkgs; [ gnome3.gnome-settings-daemon ];
+
+
+
+  # cinnamon desktop
+  #  services.xserver.desktopManager.cinnamon.enable = true; # would set qt5.style = "adwaita"
 
   # xfce would enable only qt4, see: env | grep QT_
-/* this breaks xfce desktop, cannot login
-  qt5 = {
+  /* this breaks xfce desktop, cannot login
+    qt5 = {
     enable = true;
     platformTheme = "gnome"; # fix: qt5.platformTheme is used but not defined
     style = "adwaita-dark"; # fix: qt5.style is used but not defined
-  };
-*/
+    };
+  */
 
-/* cannot set gtk theme system-wide?
-gtk = {
-  enable = true;
-  font.name = "Victor Mono SemiBold 12";
-  theme = {
+  /* cannot set gtk theme system-wide?
+    gtk = {
+    enable = true;
+    font.name = "Victor Mono SemiBold 12";
+    theme = {
     name = "SolArc-Dark";
     package = pkgs.solarc-gtk-theme;
-  };
-};
-*/
+    };
+    };
+  */
 
-/*
-[Settings]
-gtk-application-prefer-dark-theme=true
-gtk-button-images=true
-gtk-cursor-theme-name=breeze_cursors
-gtk-cursor-theme-size=24
-gtk-decoration-layout=icon:minimize,maximize,close
-gtk-enable-animations=true
-gtk-font-name=Noto Sans,  10
-gtk-icon-theme-name=breeze-dark
-gtk-menu-images=true
-gtk-primary-button-warps-slider=false
-gtk-toolbar-style=3
+  /*
+    [Settings]
+    gtk-application-prefer-dark-theme=true
+    gtk-button-images=true
+    gtk-cursor-theme-name=breeze_cursors
+    gtk-cursor-theme-size=24
+    gtk-decoration-layout=icon:minimize,maximize,close
+    gtk-enable-animations=true
+    gtk-font-name=Noto Sans,  10
+    gtk-icon-theme-name=breeze-dark
+    gtk-menu-images=true
+    gtk-primary-button-warps-slider=false
+    gtk-toolbar-style=3
 
-        gtk-icon-theme-name = "Adwaita-Dark"
-        gtk-theme-name = "Adwaita-Dark"
-*/
-# https://unix.stackexchange.com/a/633088/295986
-# https://wiki.archlinux.org/title/GTK#Configuration
-# TODO https://www.reddit.com/r/NixOS/comments/nryv23/comment/hl9izs6/
-# TODO https://nixos.wiki/wiki/GTK
-# TODO https://github.com/NixOS/nixpkgs/issues/13537 # gtk icon cache
-/*
-  environment.etc =
+    gtk-icon-theme-name = "Adwaita-Dark"
+    gtk-theme-name = "Adwaita-Dark"
+  */
+  # https://unix.stackexchange.com/a/633088/295986
+  # https://wiki.archlinux.org/title/GTK#Configuration
+  # TODO https://www.reddit.com/r/NixOS/comments/nryv23/comment/hl9izs6/
+  # TODO https://nixos.wiki/wiki/GTK
+  # TODO https://github.com/NixOS/nixpkgs/issues/13537 # gtk icon cache
+  /*
+    environment.etc =
     let
-      gtkSettings = ''
-        gtk-application-prefer-dark-theme = "true"
-        gtk-font-name = "DejaVu Sans 11"
-      '';
+    gtkSettings = ''
+    gtk-application-prefer-dark-theme = "true"
+    gtk-font-name = "DejaVu Sans 11"
+    '';
     in
     {
-      # no effect?
-      "xdg/gtk-2.0/gtkrc".source = pkgs.writeText "gtk2-settings" gtkSettings;
-      "xdg/gtk-3.0/settings.ini".source = pkgs.writeText "gtk3-settings" "[Settings]\n${gtkSettings}";
-      "xdg/gtk-4.0/settings.ini".source = pkgs.writeText "gtk4-settings" "[Settings]\n${gtkSettings}";
+    # no effect?
+    "xdg/gtk-2.0/gtkrc".source = pkgs.writeText "gtk2-settings" gtkSettings;
+    "xdg/gtk-3.0/settings.ini".source = pkgs.writeText "gtk3-settings" "[Settings]\n${gtkSettings}";
+    "xdg/gtk-4.0/settings.ini".source = pkgs.writeText "gtk4-settings" "[Settings]\n${gtkSettings}";
     };
-*/
+  */
 
-# no effect: fonts.fontconfig.dpi = 144; # blind people friendly :)
+  # no effect: fonts.fontconfig.dpi = 144; # blind people friendly :)
 
 
   # https://nixos.wiki/wiki/Tor
   services.tor.enable = true; # slow (but secure) socks proxy on port 9050: one circuit per destination address
 
   services.tor.client.enable = true; # fast (but risky) socks proxy on port 9063 for https: new circuit every 10 minutes
-#  services.tor.client.enable = false; # needed for insecure services
+  #  services.tor.client.enable = false; # needed for insecure services
 
-#TODO  services.tor-insecure.enable = true; # slow (but secure) socks proxy on port 9050: one circuit per destination address
+  #TODO  services.tor-insecure.enable = true; # slow (but secure) socks proxy on port 9050: one circuit per destination address
 
-#TODO services.tor-insecure.relay.onionServices = {
+  #TODO services.tor-insecure.relay.onionServices = {
 
-/*
-services.tor.relay.onionServices = {
+  /*
+    services.tor.relay.onionServices = {
 
-"nix-locate" = {
-      map = [{ port = 80; target = { port = 8080; }; }];
-      version = 3;
-      settings = {
+    "nix-locate" = {
+    map = [{ port = 80; target = { port = 8080; }; }];
+    version = 3;
+    settings = {
 
-#TODO default in tor-insecure
-# FIXME this requires tor.client = false
-# https://github.com/NixOS/nixpkgs/pull/48625
-HiddenServiceSingleHopMode = true; # NON ANONYMOUS. use tor only for NAT punching
-HiddenServiceNonAnonymousMode = true; # TODO verify. use extraConfig?
-SocksPort = 0;
+    #TODO default in tor-insecure
+    # FIXME this requires tor.client = false
+    # https://github.com/NixOS/nixpkgs/pull/48625
+    HiddenServiceSingleHopMode = true; # NON ANONYMOUS. use tor only for NAT punching
+    HiddenServiceNonAnonymousMode = true; # TODO verify. use extraConfig?
+    SocksPort = 0;
 
-#HiddenServicePort = 80; # ?
+    #HiddenServicePort = 80; # ?
 
-};
     };
-};
-*/
+    };
+    };
+  */
 
 
 
@@ -575,31 +578,31 @@ SocksPort = 0;
   # systemctl status -l cups.service
 
   services.printing.drivers =
-  let
-    # TODO:    nur.repos.milahu.brother-hll3210cw # brother HL-L3210CW
-    brother-hll3210cw = (pkgs.callPackage /home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/brother-hll3210cw/default.nix { });
-  in
-  [
-#    pkgs.gutenprint
-#    pkgs.gutenprintBin # canon etc
-    #pkgs.hplip pkgs.hplipWithPlugin # hp
-    #pkgs.samsungUnifiedLinuxDriver pkgs.splix # samsung
+    let
+      # TODO:    nur.repos.milahu.brother-hll3210cw # brother HL-L3210CW
+      brother-hll3210cw = (pkgs.callPackage /home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/brother-hll3210cw/default.nix { });
+    in
+    [
+      #    pkgs.gutenprint
+      #    pkgs.gutenprintBin # canon etc
+      #pkgs.hplip pkgs.hplipWithPlugin # hp
+      #pkgs.samsungUnifiedLinuxDriver pkgs.splix # samsung
 
-    pkgs.brlaser # brother
-#    brother-hll3210cw
-    pkgs.brgenml1lpr # brother # TODO
+      pkgs.brlaser # brother
+      #    brother-hll3210cw
+      pkgs.brgenml1lpr # brother # TODO
 
-# TODO
-pkgs.gutenprint
-pkgs.gutenprintBin
+      # TODO
+      pkgs.gutenprint
+      pkgs.gutenprintBin
 
-    pkgs.cups-kyocera-ecosys-m552x-p502x # kyocera p5021cdn
+      pkgs.cups-kyocera-ecosys-m552x-p502x # kyocera p5021cdn
 
-#    pkgs.cnijfilter2 # filter program for canon pixma g5050, etc
-    #nixpkgs-2021-04-19.cnijfilter2 # filter program for canon pixma g5050, etc
+      #    pkgs.cnijfilter2 # filter program for canon pixma g5050, etc
+      #nixpkgs-2021-04-19.cnijfilter2 # filter program for canon pixma g5050, etc
 
-    #canon-cups-ufr2
-  ];
+      #canon-cups-ufr2
+    ];
 
 
 
@@ -640,57 +643,57 @@ pkgs.gutenprintBin
 
 
 
-# https://nixos.wiki/wiki/Fonts
-fonts.fonts = with pkgs; [
-  #corefonts # microsoft core fonts: impact, ...
+  # https://nixos.wiki/wiki/Fonts
+  fonts.fonts = with pkgs; [
+    #corefonts # microsoft core fonts: impact, ...
 
-/*
-  open-sans
-  noto-fonts
-  #noto-fonts-cjk
-  #noto-fonts-emoji
-  liberation_ttf
-*/
+    /*
+      open-sans
+      noto-fonts
+      #noto-fonts-cjk
+      #noto-fonts-emoji
+      liberation_ttf
+    */
 
 
 
-  fira-code
-  #fira-code-symbols
-  #mplus-outline-fonts # error: A definition for option `fonts.fonts.[definition 1-entry 2]' is not of type `path'. Definition values:
-  dina-font
-  proggyfonts
-  #(nerdfonts.override { fonts = [
+    fira-code
+    #fira-code-symbols
+    #mplus-outline-fonts # error: A definition for option `fonts.fonts.[definition 1-entry 2]' is not of type `path'. Definition values:
+    dina-font
+    proggyfonts
+    #(nerdfonts.override { fonts = [
     #"FiraCode"
     #"DroidSansMono"
-  #  "nf-dev-coda"
-  #]; })
-];
+    #  "nf-dev-coda"
+    #]; })
+  ];
 
 
 
 
 
 
-# TODO microvm.nix -> ignite
+  # TODO microvm.nix -> ignite
 
-#virtualisation.containerd.enable = true; # todo
+  #virtualisation.containerd.enable = true; # todo
 
-# needed for
-# https://github.com/LanikSJ/dfimage
-# https://github.com/mrhavens/Dedockify
-# https://github.com/CenturyLinkLabs/dockerfile-from-image
-# -> reverse-engineer https://hub.docker.com/layers/sharelatex/sharelatex
-virtualisation.docker.enable = true;
+  # needed for
+  # https://github.com/LanikSJ/dfimage
+  # https://github.com/mrhavens/Dedockify
+  # https://github.com/CenturyLinkLabs/dockerfile-from-image
+  # -> reverse-engineer https://hub.docker.com/layers/sharelatex/sharelatex
+  virtualisation.docker.enable = true;
 
-/*
-  virtualisation = {
+  /*
+    virtualisation = {
     podman = {
-      enable = true;
-      # Create a `docker` alias for podman, to use it as a drop-in replacement
-      #dockerCompat = true;
+    enable = true;
+    # Create a `docker` alias for podman, to use it as a drop-in replacement
+    #dockerCompat = true;
     };
-  };
-*/
+    };
+  */
 
 
 
@@ -713,7 +716,8 @@ virtualisation.docker.enable = true;
 
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [
-    80 443 # nginx
+    80
+    443 # nginx
     #21 # ftpd
 
     #138 # NetBIOS Datagram
@@ -733,62 +737,62 @@ virtualisation.docker.enable = true;
 
 
 
-services.proftpd = {
-  #enable = true;
-  enable = false;
-  name = ''quotes " test'';
-  #extraConfig = builtins.readFile ./proftpd.conf;
-  extraConfig = ''
-# no chmod
-<Limit SITE_CHMOD>
-  DenyAll
-</Limit>
-# anon only
-<Limit LOGIN>
-  DenyAll
-</Limit>
-<Anonymous /home/user/down/torrent/seed/Heimat.Defender.2021.Kvltgames.EinProzent>
-  <Limit LOGIN>
-    AllowAll
-  </Limit>
-  User				user
-  Group				users
-  #UserAlias			anonymous ftp
-  UserAlias			anonymous user
-  #RequireValidShell off
-  # read only
-  <Limit WRITE>
-    DenyAll
-  </Limit>
-</Anonymous>
-'';
-};
+  services.proftpd = {
+    #enable = true;
+    enable = false;
+    name = ''quotes " test'';
+    #extraConfig = builtins.readFile ./proftpd.conf;
+    extraConfig = ''
+      # no chmod
+      <Limit SITE_CHMOD>
+        DenyAll
+      </Limit>
+      # anon only
+      <Limit LOGIN>
+        DenyAll
+      </Limit>
+      <Anonymous /home/user/down/torrent/seed/Heimat.Defender.2021.Kvltgames.EinProzent>
+        <Limit LOGIN>
+          AllowAll
+        </Limit>
+        User				user
+        Group				users
+        #UserAlias			anonymous ftp
+        UserAlias			anonymous user
+        #RequireValidShell off
+        # read only
+        <Limit WRITE>
+          DenyAll
+        </Limit>
+      </Anonymous>
+    '';
+  };
 
 
 
-/*
-services.pure-ftpd = {
-#  enable = true;
-  args = [
+  /*
+    services.pure-ftpd = {
+    #  enable = true;
+    args = [
     "--anonymousonly"
     "--chrooteveryone"
     "--daemonize"
     "--tls" "0" # 
-# 0:no TLS
-# 1:TLS+cleartext
-# 2:enforce TLS |
-# 3:enforce encrypted data channel as well
+    # 0:no TLS
+    # 1:TLS+cleartext
+    # 2:enforce TLS |
+    # 3:enforce encrypted data channel as well
     "--ipv4only"
     "--maxclientsnumber" "1"
     "--verboselog"
-  ];
-};
-*/
+    ];
+    };
+  */
 
 
   # FTP server
   services.vsftpd = {
-#    enable = true;
+    #    enable = true;
     extraConfig = ''
       pasv_enable=YES
       pasv_min_port=51000
@@ -824,7 +828,7 @@ services.pure-ftpd = {
     # minimal secure setup:
     userlistDeny = false;
     localUsers = true;
-    userlist = ["non-root-user" "other-non-root-user"];
+    userlist = [ "non-root-user" "other-non-root-user" ];
     #forceLocalLoginsSSL = true;
     #forceLocalDataSSL = true;
     #rsaCertFile = "/var/vsftpd/vsftpd.pem";
@@ -833,24 +837,24 @@ services.pure-ftpd = {
 
 
 
-# https://nixos.wiki/wiki/Binary_Cache
-# TODO ...
-services.nginx = {
-  enable = true;
-  virtualHosts = {
-    # ... existing hosts config etc. ...
-#    "binarycache.laptop1" = {
-    "nixos-cache.laptop1" = {
-      serverAliases = [ "nixos-cache" ];
-      locations."/".extraConfig = ''
-        proxy_pass http://localhost:${toString config.services.nix-serve.port};
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-      '';
+  # https://nixos.wiki/wiki/Binary_Cache
+  # TODO ...
+  services.nginx = {
+    enable = true;
+    virtualHosts = {
+      # ... existing hosts config etc. ...
+      #    "binarycache.laptop1" = {
+      "nixos-cache.laptop1" = {
+        serverAliases = [ "nixos-cache" ];
+        locations."/".extraConfig = ''
+          proxy_pass http://localhost:${toString config.services.nix-serve.port};
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        '';
+      };
     };
   };
-};
 
 
 
@@ -865,12 +869,12 @@ services.nginx = {
 
 
 
-/* fuck this. not working with windows 10 client.
-# https://nixos.wiki/wiki/Samba#Samba_Server
-services.samba = {
-  enable = true;
-  securityType = "user";
-  extraConfig = ''
+  /* fuck this. not working with windows 10 client.
+    # https://nixos.wiki/wiki/Samba#Samba_Server
+    services.samba = {
+    enable = true;
+    securityType = "user";
+    extraConfig = ''
     workgroup = WORKGROUP
     server string = smbnix
     netbios name = smbnix
@@ -897,137 +901,137 @@ services.samba = {
     hosts deny = 0.0.0.0/0
     guest account = nobody
     map to guest = bad user
-  '';
-  shares = {
+    '';
+    shares = {
     autosub = {
-      path = "/home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/autosub-by-abhirooptalasila";
-      browseable = "yes";
-      "read only" = "yes";
-      #"guest ok" = "yes";
-      #"create mask" = "0644";
-      #"directory mask" = "0755";
-      #"force user" = "username";
-      #"force group" = "groupname";
+    path = "/home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/autosub-by-abhirooptalasila";
+    browseable = "yes";
+    "read only" = "yes";
+    #"guest ok" = "yes";
+    #"create mask" = "0644";
+    #"directory mask" = "0755";
+    #"force user" = "username";
+    #"force group" = "groupname";
     };
-  };
-};
-services.samba-wsdd.enable = true; # make shares visible for windows 10 clients
-networking.firewall.enable = true;
-networking.firewall.allowPing = true;
-services.samba.openFirewall = true;
-*/
+    };
+    };
+    services.samba-wsdd.enable = true; # make shares visible for windows 10 clients
+    networking.firewall.enable = true;
+    networking.firewall.allowPing = true;
+    services.samba.openFirewall = true;
+  */
 
 
 
 
-/*
-security.setuidPrograms = [
-  "firejail" # fix: Error mkdir: util.c:1141 create_empty_dir_as_root: Permission denied
-];
-security.wrappers
-*/
-#programs.firejail.enable = true;
+  /*
+    security.setuidPrograms = [
+    "firejail" # fix: Error mkdir: util.c:1141 create_empty_dir_as_root: Permission denied
+    ];
+    security.wrappers
+  */
+  #programs.firejail.enable = true;
 
-/*
-noblacklist ${HOME}/.jd
+  /*
+    noblacklist ${HOME}/.jd
 
-# Allow java (blacklisted by disable-devel.inc)
-include allow-java.inc
+    # Allow java (blacklisted by disable-devel.inc)
+    include allow-java.inc
 
-mkdir ${HOME}/.jd
-whitelist ${HOME}/.jd
+    mkdir ${HOME}/.jd
+    whitelist ${HOME}/.jd
 
-include chromium.profile
-*/
+    include chromium.profile
+  */
 
   programs.firejail = {
     enable = true;
     wrappedBinaries = {
-/*
-      jdownloader = {
+      /*
+        jdownloader = {
         executable = "${pkgs.jdownloader}/bin/jdownloader";
         profile = "${pkgs.firejail}/etc/firejail/jdownloader.profile"; # JDownloader.profile ?
         extraArgs = [
-          #"--ignore=private-dev"
-          "--name=jdownloader" # firejail --join=jdownloader bash
-          #"--x11=xpra" # fail: jd has access to clipboard
-          "--x11=xorg" # fail: jd has access to clipboard
+        #"--ignore=private-dev"
+        "--name=jdownloader" # firejail --join=jdownloader bash
+        #"--x11=xpra" # fail: jd has access to clipboard
+        "--x11=xorg" # fail: jd has access to clipboard
         ];
-      };
-*/
+        };
+      */
 
-/*
-JDownloader can't execute web browser
-https://github.com/netblue30/firejail/issues/2336
-
-Try creating ~/.config/firejail/JDownloader.profile:
-
-```
-noblacklist ${HOME}/.jd
-
-# Allow java (blacklisted by disable-devel.inc)
-include allow-java.inc
-
-mkdir ${HOME}/.jd
-whitelist ${HOME}/.jd
-
-include chromium.profile
-```
-*/
       /*
-      librewolf = {
+        JDownloader can't execute web browser
+        https://github.com/netblue30/firejail/issues/2336
+
+        Try creating ~/.config/firejail/JDownloader.profile:
+
+        ```
+        noblacklist ${HOME}/.jd
+
+        # Allow java (blacklisted by disable-devel.inc)
+        include allow-java.inc
+
+        mkdir ${HOME}/.jd
+        whitelist ${HOME}/.jd
+
+        include chromium.profile
+        ```
+      */
+      /*
+        librewolf = {
         executable = "${lib.getBin pkgs.unstable.librewolf-wayland}/bin/librewolf"; # FIXME
         profile = "${pkgs.firejail}/etc/firejail/librewolf.profile";
         extraArgs = [ "--ignore=private-dev" ];
-      };
-      signal-desktop = {
+        };
+        signal-desktop = {
         executable = "${lib.getBin pkgs.signal-desktop}/bin/signal-desktop --enable-features=UseOzonePlatform --ozone-platform=wayland"; # FIXME
         profile = "${pkgs.firejail}/etc/firejail/signal-desktop.profile";
         extraArgs = [ "--env=LC_ALL=C" ]; # FIXME
-      };
+        };
       */
     };
   };
 
 
 
-# TODO
-#programs.unity3d.enable = true; # -> security.chromiumSuidSandbox.enable
-security.chromiumSuidSandbox.enable = true;
-#programs.unityhub.enable = true; # does not exist
+  # TODO
+  #programs.unity3d.enable = true; # -> security.chromiumSuidSandbox.enable
+  security.chromiumSuidSandbox.enable = true;
+  #programs.unityhub.enable = true; # does not exist
 
 
-#############################################################################################
-#############################################################################################
-#############################################################################################
-#############################################################################################
-#############################################################################################
+  #############################################################################################
+  #############################################################################################
+  #############################################################################################
+  #############################################################################################
+  #############################################################################################
 
 
   environment.systemPackages = with pkgs; [
 
 
 
-#subtitleeditor # TODO test with patched gstreamermm
-# ^^ crap. use gaupol
+    #subtitleeditor # TODO test with patched gstreamermm
+    # ^^ crap. use gaupol
 
 
-#    pkgs.nur.repos.mic92.hello-nur
+    #    pkgs.nur.repos.mic92.hello-nur
 
-# TODO whats the difference?
-#nur.repos.sigprof.vdhcoapp # 1.6.3
-#nur.repos.wolfangaukang.vdhcoapp # 1.6.3 # TODO
+    # TODO whats the difference?
+    #nur.repos.sigprof.vdhcoapp # 1.6.3
+    #nur.repos.wolfangaukang.vdhcoapp # 1.6.3 # TODO
 
-#firejail # security
+    #firejail # security
 
-#xpra # firejail --x11=xpra
-#xorg.xauth # firejail --x11=xorg
+    #xpra # firejail --x11=xpra
+    #xorg.xauth # firejail --x11=xorg
 
-/*
-  (xpra.overridePythonAttrs (old: {
-    # /home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/jdownloader/jdownloader-in-firejail.nix
-    # https://github.com/NixOS/nixpkgs/issues/122159
-    postFixup = ''
+    /*
+      (xpra.overridePythonAttrs (old: {
+      # /home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/jdownloader/jdownloader-in-firejail.nix
+      # https://github.com/NixOS/nixpkgs/issues/122159
+      postFixup = ''
       cat >$out/bin/xpra.polyglot <<EOF
       $(head -n1 $out/bin/xpra)
       # polyglot: bash + python
@@ -1042,109 +1046,109 @@ security.chromiumSuidSandbox.enable = true;
       EOF
       mv $out/bin/xpra.polyglot $out/bin/xpra
       chmod +x $out/bin/xpra
-    '';
-  }))
-*/
+      '';
+      }))
+    */
 
-gnome3.adwaita-icon-theme
-#gnomeExtensions.appindicator
+    gnome3.adwaita-icon-theme
+    #gnomeExtensions.appindicator
 
-# all gtk themes
-/*
-adapta-gtk-theme
-#cde-gtk-theme # broken
-layan-gtk-theme
-lounge-gtk-theme
-matcha-gtk-theme
-mojave-gtk-theme
-numix-gtk-theme
-numix-solarized-gtk-theme
-numix-sx-gtk-theme
-#### missing elementary-gtk-theme
-paper-gtk-theme
-pop-gtk-theme
-sierra-gtk-theme
-solarc-gtk-theme
-vimix-gtk-themes
-whitesur-gtk-theme
-*/
+    # all gtk themes
+    /*
+      adapta-gtk-theme
+      #cde-gtk-theme # broken
+      layan-gtk-theme
+      lounge-gtk-theme
+      matcha-gtk-theme
+      mojave-gtk-theme
+      numix-gtk-theme
+      numix-solarized-gtk-theme
+      numix-sx-gtk-theme
+      #### missing elementary-gtk-theme
+      paper-gtk-theme
+      pop-gtk-theme
+      sierra-gtk-theme
+      solarc-gtk-theme
+      vimix-gtk-themes
+      whitesur-gtk-theme
+    */
 
-# qt themes
-/*
-qtstyleplugin-kvantum-qt4
-libsForQt5.qtstyleplugin-kvantum
-*/
+    # qt themes
+    /*
+      qtstyleplugin-kvantum-qt4
+      libsForQt5.qtstyleplugin-kvantum
+    */
 
-/*
-# open lxappearance and pick your themes
-  gtk-engine-murrine
-  gtk_engines
-  gsettings-desktop-schemas
-  lxappearance
-*/
+    /*
+      # open lxappearance and pick your themes
+      gtk-engine-murrine
+      gtk_engines
+      gsettings-desktop-schemas
+      lxappearance
+    */
 
 
 
-torsocks
-#tightvnc # -> tigervnc
+    torsocks
+    #tightvnc # -> tigervnc
 
     wget
     curl
     curl.dev # curl-config, needed by pyload
     speedtest-cli
 
-ipfs
-#ipfs-desktop # TODO undefined
+    ipfs
+    #ipfs-desktop # TODO undefined
 
-# chat
-element-desktop
-tdesktop # telegram
-#hexchat # irc
-whatsapp-for-linux
+    # chat
+    element-desktop
+    tdesktop # telegram
+    #hexchat # irc
+    whatsapp-for-linux
 
-linuxPackages.cpupower
+    linuxPackages.cpupower
 
-nix-index # nix-locate
-cached-nix-shell # Instant startup time for nix-shell
+    nix-index # nix-locate
+    cached-nix-shell # Instant startup time for nix-shell
 
-gimp
-inkscape
-(symlinkJoin {
-  name = "inkscape";
-  paths = [
+    gimp
     inkscape
-    python3
-    python3.pkgs.packaging
-  ];
-})
-strawberry # music player
-#calibre # ebook converter
+    (symlinkJoin {
+      name = "inkscape";
+      paths = [
+        inkscape
+        python3
+        python3.pkgs.packaging
+      ];
+    })
+    strawberry # music player
+    #calibre # ebook converter
 
-screen
-#tmux
+    screen
+    #tmux
 
-mmv
-pv # pipe view (progress, rate)
-tree
-onboard # virtual keyboard
-killall
-unixtools.xxd # encode/decode hex strings to/from bytes
-moreutils # sponge: soak up stdin/write to file
-unzip
-#html-tidy
-bridge-utils # brctl -> network bridges
+    mmv
+    pv # pipe view (progress, rate)
+    tree
+    onboard # virtual keyboard
+    killall
+    unixtools.xxd # encode/decode hex strings to/from bytes
+    moreutils # sponge: soak up stdin/write to file
+    unzip
+    #html-tidy
+    bridge-utils # brctl -> network bridges
 
 
 
-#monero-gui monero
+    #monero-gui monero
 
-expect # unbuffer
+    expect # unbuffer
 
-sane-backends # scanner, tool: scanimage
+    sane-backends # scanner, tool: scanimage
 
-usbutils # lsusb
+    usbutils # lsusb
 
-imagemagick # convert
+    imagemagick # convert
 
     ark # kde archive manager
     p7zip
@@ -1161,81 +1165,81 @@ imagemagick # convert
 
     spectacle # screenshot?
 
-cloc # count lines of code
+    cloc # count lines of code
 
-vscodium
-clang-tools # clangd = c/cpp lang server
-rnix-lsp # nix lang server
+    vscodium
+    clang-tools # clangd = c/cpp lang server
+    rnix-lsp # nix lang server
 
-meld # Visual diff and merge tool
+    meld # Visual diff and merge tool
 
     okular # document viewer
 
-# ocr
-gImageReader
-hunspell # spell checker
-hunspellDicts.de_DE
-hunspellDicts.en_US-large
+    # ocr
+    gImageReader
+    hunspell # spell checker
+    hunspellDicts.de_DE
+    hunspellDicts.en_US-large
 
     # web browsers
     ungoogled-chromium
     librewolf # firefox with better privacy
-#    firefox # con: censorship?
+    #    firefox # con: censorship?
 
-#evolution # email
-#hydroxide # email bridge/proxy for protonmail.com
+    #evolution # email
+    #hydroxide # email bridge/proxy for protonmail.com
 
-#nixpkgs-2021-04-19.tor-browser-bundle-bin
-tor-browser-bundle-bin # TODO use cached
+    #nixpkgs-2021-04-19.tor-browser-bundle-bin
+    tor-browser-bundle-bin # TODO use cached
 
     mpv # video player
 
-# TODO
-#nur.repos.milahu.svn2github
+    # TODO
+    #nur.repos.milahu.svn2github
 
-#nur.repos.milahu.srtgen
-#(callPackage ./pkgs/srtgen { })
+    #nur.repos.milahu.srtgen
+    #(callPackage ./pkgs/srtgen { })
 
     ffmpeg-full
     subdl # subtitle downloader
 
-#subtitleeditor # -> gaupol
-#nur.repos.milahu.gaupol # TODO update nur
+    #subtitleeditor # -> gaupol
+    #nur.repos.milahu.gaupol # TODO update nur
 
-#(subtitleeditor.override { gstreamermm = gstreamermm_patched; }) # unexpected arg: gstreamermm
+    #(subtitleeditor.override { gstreamermm = gstreamermm_patched; }) # unexpected arg: gstreamermm
 
-#    kdenlive # video editor
+    #    kdenlive # video editor
     #youtube-dl
-yt-dlp # youtube-dl fork
-#sox
+    yt-dlp # youtube-dl fork
+    #sox
 
 
 
     konsole
-#    dolphin # qt file manager
+    #    dolphin # qt file manager
 
     nodejs_latest
 
 
     wireguard-tools
 
-#kate
+    #kate
 
-/*
-qtcurve # qt themes
-qt5ct # qtcontrol for qt5
-breeze-qt5 # breeze-dark theme?
-*/
+    /*
+      qtcurve # qt themes
+      qt5ct # qtcontrol for qt5
+      breeze-qt5 # breeze-dark theme?
+    */
 
     libdeflate
     zlib
-#    rubyPackages.nokogiri # huginn
+    #    rubyPackages.nokogiri # huginn
     jq # json query
 
-#    python2
+    #    python2
     #python27Packages.pip
 
-#    python3 # test: ~/src/nixos/nix-review/nixpkgs-review -> use python3 from default.nix
+    #    python3 # test: ~/src/nixos/nix-review/nixpkgs-review -> use python3 from default.nix
     #python3 # needed for inkscape (save as optimized svg)
     #python3.pkgs.packaging # not working in inkscape
     #(python3.withPackages (pp: with pp; [ packaging ])) # not working in inkscape
@@ -1245,37 +1249,34 @@ breeze-qt5 # breeze-dark theme?
     #python # needed for inkscape (save as optimized svg)
     #python.pkgs.packaging # not working in inkscape
 
-nftables # for wireguard
+    nftables # for wireguard
 
+    qbittorrent
+    #jdownloader # ddl manager
 
-qbittorrent
-#jdownloader # ddl manager
+    gst_all_1.gst-plugins-good # gstreamer plugins
 
-gst_all_1.gst-plugins-good # gstreamer plugins
+    cachix # cachix use nix-community
+    # Enable the Nix Community cache:
+    # https://github.com/nix-community/redoxpkgs
 
+    htop # monitor cpu + memory
+    iotop # monitor disks
+    nethogs # monitor network by process
+    iftop # monitor network by connection
+    nmap # network port scanner
 
-cachix # cachix use nix-community
-# Enable the Nix Community cache:
-# https://github.com/nix-community/redoxpkgs
+    bintools-unwrapped # nm strings ...
 
+    ruplacer # replace fixed strings. similar: rpl
 
-htop # monitor cpu + memory
-iotop # monitor disks
-nethogs # monitor network by process
-iftop # monitor network by connection
-nmap # network port scanner
+    # TODO: jaq # alternative to jq
 
-bintools-unwrapped # nm strings ...
+    nix-prefetch-github
 
-ruplacer # replace fixed strings. similar: rpl
+    thinkfan # laptop fan control
+    lm_sensors # sensors: temperature ...
 
-# TODO: jaq # alternative to jq
-
-nix-prefetch-github
-
-
-thinkfan # laptop fan control
-lm_sensors # sensors: temperature ...
-
+    #direnv # use .envrc files
   ];
 }
