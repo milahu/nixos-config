@@ -1,0 +1,29 @@
+# https://gitlab.gnome.org/GNOME/gstreamermm/-/merge_requests/4
+# https://github.com/NixOS/nixpkgs/issues/170186
+
+diff --git a/gstreamer/gstreamermm/register.h b/gstreamer/gstreamermm/register.h
+index db66d172804a67937fb62613fb5e57284584a78e..a7ab3a63ee1ca10c96ce0e1f3a2ff79dfc50db27 100644
+--- a/gstreamer/gstreamermm/register.h
++++ b/gstreamer/gstreamermm/register.h
+@@ -110,7 +110,7 @@ register_mm_type(const gchar * type_name)
+     /* The typedef for GType may be gulong or gsize, depending on the
+      * system and whether the compiler is c++ or not. The g_once_init_*
+      * functions always take a gsize * though ... */
+-    static volatile gsize gonce_data = 0;
++    static gsize gonce_data = 0;
+     if (g_once_init_enter (&gonce_data)) {
+         GTypeInfo info;
+ 
+diff --git a/tests/integration/test-integration-seekonstartup.cc b/tests/integration/test-integration-seekonstartup.cc
+index 247ac499c4dd21651c373d36208dca9e81e6cb5c..cd43a125fab8025c89ce630f3f891c6e546cfdd0 100644
+--- a/tests/integration/test-integration-seekonstartup.cc
++++ b/tests/integration/test-integration-seekonstartup.cc
+@@ -18,7 +18,7 @@ RefPtr<Glib::MainLoop> mainloop;
+ RefPtr<Bus> bus;
+ RefPtr<Pipeline> pipeline;
+ RefPtr<Pad> sink_pad;
+-static volatile gint counter;
++static gint counter;
+ bool prerolled = false;
+ gboolean was_check = 0;
+ 
