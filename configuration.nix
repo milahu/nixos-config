@@ -1,8 +1,5 @@
 # TODO use only 2 of 4 cores for nix-build, to make laptop more quiet
 
-# m was here :)
-#asf
-
 # TODO move all flakes stuff to flake.nix
 #  nixpkgs.overlays = [ inputs.nur.overlay ];
 # pin nixpkgs in the system-wide flake registry
@@ -50,6 +47,7 @@
         });
       */
 
+      /*
       youtube-dl = pkgs.youtube-dl.overrideAttrs (old: {
         # fix: Unable to extract Initial JS player n function name
         patches = [ ];
@@ -62,6 +60,7 @@
         };
         postInstall = ""; # fix: youtube-dl.zsh no such file
       });
+      */
 
     })
 
@@ -111,11 +110,9 @@
     #nixpkgs.config.packageOverrides = pkgs: let final = pkgs.pkgs; in { # pkgs/final = prev/final = super/self
   }; # packageOverrides
 
-
   # dont build nixos-manual-html (etc)
   documentation.doc.enable = false;
   documentation.nixos.enable = false;
-
 
   services.sshd.enable = true;
 
@@ -143,8 +140,6 @@
 
   networking.hostName = "laptop1";
 
-
-
   /* replaced with tigervnc
     nixpkgs.config.permittedInsecurePackages = [
     "tightvnc-1.3.10"
@@ -154,7 +149,6 @@
   nixpkgs.config.permittedInsecurePackages = [
     "nodejs-12.22.12" # TODO who needs nodejs 12? pkgs.nodejs-12_x
   ];
-
 
   nixpkgs.config.allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) [
     #"osu-lazer"
@@ -234,6 +228,7 @@
   #       builders-use-substitutes = true
   #'';
 
+  /*
   networking.extraHosts =
     ''
       192.168.1.191 laptop2
@@ -242,14 +237,15 @@
 
       73.157.50.82 jonringer
     '';
+  */
 
-
+  /*
   services.nix-serve = {
     enable = true;
     secretKeyFile = "/etc/nixos/nixos-cache/cache-priv-key.pem";
     # /etc/nixos/nixos-cache/cache-pub-key.pem
   };
-
+  */
 
   fileSystems."/" =
     {
@@ -266,15 +262,7 @@
       ];
     };
 
-
-
-
-
   programs.extra-container.enable = true; # nixos unstable
-
-
-
-
 
   # sudo sysctl net.core.rmem_max=4194304 net.core.wmem_max=1048576
   boot.kernel.sysctl."net.core.rmem_max" = 4194304; # transmission-daemon told me to = 10x more than 425984
@@ -290,7 +278,6 @@
   # boot.loader.efi.efiSysMountPoint = "/boot/efi";
   # Define on which hard drive you want to install Grub.
   boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
-
 
   # TODO add fancontrol service
   # power management
@@ -371,10 +358,6 @@
   # replicates the default behaviour.
   networking.useDHCP = false;
 
-
-
-
-
   #networking.interfaces.enp0s25.useDHCP = true;
   networking.interfaces.enp0s25.useDHCP = false;
   #networking.interfaces.wls1.useDHCP = true; # wifi
@@ -396,11 +379,6 @@
   console.packages = [ pkgs.terminus_font ];
   console.earlySetup = true; # set font early in boot
 
-
-
-
-
-
   services.xserver.enable = true;
   # Configure keymap in X11
   services.xserver.layout = "de";
@@ -410,7 +388,6 @@
 
   #services.xserver.displayManager.autoLogin.enable = true;
   #services.xserver.displayManager.autoLogin.user = "user";
-
 
   # === KDE SDDM ===
 
@@ -463,15 +440,12 @@
     ]);
   */
 
-
   # gnome
   # fix:  dconf-WARNING **: failed to commit changes to dconf: GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown: The name ca.desrt.dconf was not provided by any .service files
   #programs.dconf.enable = true;
 
   # gnome
   #services.udev.packages = with pkgs; [ gnome3.gnome-settings-daemon ];
-
-
 
   # cinnamon desktop
   #  services.xserver.desktopManager.cinnamon.enable = true; # would set qt5.style = "adwaita"
@@ -536,7 +510,6 @@
 
   # no effect: fonts.fontconfig.dpi = 144; # blind people friendly :)
 
-
   # https://nixos.wiki/wiki/Tor
   services.tor.enable = true; # slow (but secure) socks proxy on port 9050: one circuit per destination address
 
@@ -569,12 +542,10 @@
     };
   */
 
-
-
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
-  services.printing.extraConf = ''LogLevel debug'';
+  #services.printing.extraConf = ''LogLevel debug'';
   # systemctl status -l cups.service
 
   services.printing.drivers =
@@ -604,10 +575,6 @@
       #canon-cups-ufr2
     ];
 
-
-
-
-
   # increase size of /run/user/1000 (max = ram + swap = 8 + 16 = 24)
   # swap -> /etc/nixos/hardware-configuration.nix
   # https://unix.stackexchange.com/questions/597024/how-to-resize-the-run-directory
@@ -615,11 +582,6 @@
     RuntimeDirectorySize=12G
     HandleLidSwitchDocked=ignore
   '';
-
-
-
-
-
 
   # Enable sound.
   sound.enable = true;
@@ -639,10 +601,6 @@
     ];
   };
 
-
-
-
-
   # https://nixos.wiki/wiki/Fonts
   fonts.fonts = with pkgs; [
     #corefonts # microsoft core fonts: impact, ...
@@ -655,8 +613,6 @@
       liberation_ttf
     */
 
-
-
     fira-code
     #fira-code-symbols
     #mplus-outline-fonts # error: A definition for option `fonts.fonts.[definition 1-entry 2]' is not of type `path'. Definition values:
@@ -668,11 +624,6 @@
     #  "nf-dev-coda"
     #]; })
   ];
-
-
-
-
-
 
   # TODO microvm.nix -> ignite
 
@@ -694,11 +645,6 @@
     };
     };
   */
-
-
-
-
-
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -735,8 +681,6 @@
     #{ from = 51000; to = 51999; } # ftpd passive mode
   ];
 
-
-
   services.proftpd = {
     #enable = true;
     enable = false;
@@ -768,8 +712,6 @@
     '';
   };
 
-
-
   /*
     services.pure-ftpd = {
     #  enable = true;
@@ -788,7 +730,6 @@
     ];
     };
   */
-
 
   # FTP server
   services.vsftpd = {
@@ -834,11 +775,9 @@
     #rsaCertFile = "/var/vsftpd/vsftpd.pem";
   };
 
-
-
-
   # https://nixos.wiki/wiki/Binary_Cache
   # TODO ...
+  /*
   services.nginx = {
     enable = true;
     virtualHosts = {
@@ -855,8 +794,7 @@
       };
     };
   };
-
-
+  */
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -865,9 +803,6 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "20.09"; # Did you read the comment?
-
-
-
 
   /* fuck this. not working with windows 10 client.
     # https://nixos.wiki/wiki/Samba#Samba_Server
@@ -920,9 +855,6 @@
     networking.firewall.allowPing = true;
     services.samba.openFirewall = true;
   */
-
-
-
 
   /*
     security.setuidPrograms = [
@@ -993,24 +925,18 @@
     };
   };
 
-
-
   # TODO
   #programs.unity3d.enable = true; # -> security.chromiumSuidSandbox.enable
   security.chromiumSuidSandbox.enable = true;
   #programs.unityhub.enable = true; # does not exist
 
-
   #############################################################################################
   #############################################################################################
   #############################################################################################
   #############################################################################################
   #############################################################################################
-
 
   environment.systemPackages = with pkgs; [
-
-
 
     #subtitleeditor # TODO test with patched gstreamermm
     # ^^ crap. use gaupol
@@ -1087,8 +1013,6 @@
       lxappearance
     */
 
-
-
     torsocks
     #tightvnc # -> tigervnc
 
@@ -1097,14 +1021,14 @@
     curl.dev # curl-config, needed by pyload
     speedtest-cli
 
-    ipfs
+    #ipfs
     #ipfs-desktop # TODO undefined
 
     # chat
-    element-desktop
-    tdesktop # telegram
+    #element-desktop
+    #tdesktop # telegram
     #hexchat # irc
-    whatsapp-for-linux
+    #whatsapp-for-linux
 
     linuxPackages.cpupower
 
@@ -1113,21 +1037,14 @@
 
     gimp
     inkscape
-    (symlinkJoin {
-      name = "inkscape";
-      paths = [
-        inkscape
-        python3
-        python3.pkgs.packaging
-      ];
-    })
+
     strawberry # music player
     #calibre # ebook converter
 
     screen
     #tmux
 
-    mmv
+    mmv # multi move
     pv # pipe view (progress, rate)
     tree
     onboard # virtual keyboard
@@ -1137,8 +1054,6 @@
     unzip
     #html-tidy
     bridge-utils # brctl -> network bridges
-
-
 
     #monero-gui monero
 
@@ -1157,11 +1072,11 @@
     gwenview # image viewer
 
     git
-    git-lfs # upload large files (>100MB) to github
+    #git-lfs # upload large files (>100MB) to github
     #git-repo-filter # delete files in git history
     git-filter-repo # deprecated: git filter-branch
 
-    xfce.orage # calendar. TODO import old data! from ~/user-old
+    #xfce.orage # calendar. TODO import old data! from ~/user-old
 
     spectacle # screenshot?
 
@@ -1184,7 +1099,7 @@
     # web browsers
     ungoogled-chromium
     librewolf # firefox with better privacy
-    #    firefox # con: censorship?
+    #firefox # con: censorship?
 
     #evolution # email
     #hydroxide # email bridge/proxy for protonmail.com
@@ -1213,13 +1128,10 @@
     yt-dlp # youtube-dl fork
     #sox
 
-
-
     konsole
     #    dolphin # qt file manager
 
     nodejs_latest
-
 
     wireguard-tools
 
@@ -1268,7 +1180,7 @@
 
     bintools-unwrapped # nm strings ...
 
-    ruplacer # replace fixed strings. similar: rpl
+    #ruplacer # replace fixed strings. similar: rpl
 
     # TODO: jaq # alternative to jq
 
