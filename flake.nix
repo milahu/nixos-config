@@ -84,23 +84,25 @@ nixos https://nixos.org/channels/nixos-21.05
 
         ({ pkgs, ... }: {
           nix.extraOptions = ''
-            experimental-features = nix-command flakes recursive-nix
-            system-features = nixos-test benchmark big-parallel kvm recursive-nix
+            experimental-features = nix-command flakes recursive-nix impure-derivations
+            # ca-derivations
+            #system-features = nixos-test benchmark big-parallel kvm recursive-nix
             keep-outputs = true
             keep-derivations = true
-            extra-sandbox-paths = /nix/var/cache/ccache /nix/var/cache/sccache
+            #extra-sandbox-paths = /nix/var/cache/ccache /nix/var/cache/sccache
 
             builders-use-substitutes = true
             # dont upload paths to remote, remote should download from cache.nixos.org
 
+            # RISKY: allow install from remote builders
             require-sigs = false
 
             # https://github.com/astro/microvm.nix/issues/3
-            extra-substituters = https://microvm.cachix.org
-            trusted-public-keys = microvm.cachix.org:oXnBc6hRE3eX5rSYdRyMYXnfzcCxC7yKPTbZXALsqys=
+            #extra-substituters = https://microvm.cachix.org
+            #trusted-public-keys = microvm.cachix.org:oXnBc6hRE3eX5rSYdRyMYXnfzcCxC7yKPTbZXALsqys=
 
             #extra-substituters = ssh://jonringer.us
-            trusted-substituters = ssh://jonringer.us
+            #trusted-substituters = ssh://jonringer.us
             # use only on demand: nix-build --extra-substituters ssh://jonringer.us
 
             # use only 2 of 4 cores, to make laptop more quiet
@@ -158,6 +160,21 @@ nix.package =
   in
   pkgs.nixVersions.nix_2_7;
 */
+
+  # trying to reproduce
+  # https://github.com/NixOS/nix/issues/6572
+  # nix-build: requires non-existent output 'out' from input derivation
+  # latest version: nix 2.10.3
+  #nix.package = pkgs.nixVersions.nix_2_8; # nix (Nix) 2.8.1
+
+  nix.package = pkgs.nix.overrideAttrs (old: {
+    version = "2.11.0-git-53d618414";
+    src = /home/user/src/nix/nix;
+  }); # nix (Nix) 2.8.1
+
+
+
+
 
 /*
   nix.package =
@@ -227,7 +244,7 @@ nix.package =
                   # and root e.g. `nix-channel --remove nixos`. `nix-channel
                   # --list` should be empty for all users afterwards
           nix.nixPath = [
-            "nixos=${inputs.nixpkgs}" "nixpkgs=${inputs.nixpkgs}"
+            "nixos=${inputs.nixpkgs}/nixos" "nixpkgs=${inputs.nixpkgs}"
           ];
 # after `sudo nix-channel --remove nixos` and `sudo nix-channel --update`
 # not working

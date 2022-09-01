@@ -1,5 +1,7 @@
 # TODO use only 2 of 4 cores for nix-build, to make laptop more quiet
 
+# asdf
+
 # TODO move all flakes stuff to flake.nix
 #  nixpkgs.overlays = [ inputs.nur.overlay ];
 # pin nixpkgs in the system-wide flake registry

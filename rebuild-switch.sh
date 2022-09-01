@@ -15,9 +15,12 @@ opts='--impure' # allow acces to /home
 
 #opts+=' --flake /home/user/src/nixos/nixos-config'
 
+#opts+=' -vvvv' # debug
+
 echo "maybe run:"
 echo "nix-store --verify --repair"
 echo "... to fix store after writable-nix-store.js"
 
 # this should be enough to build nixos flake config
+set -x
 sudo nixos-rebuild switch $opts --builders "" --print-build-logs "$@"
