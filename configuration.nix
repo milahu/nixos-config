@@ -1,3 +1,5 @@
+# TODO spotify, wg-quick + netns + piavpn
+
 # TODO use only 2 of 4 cores for nix-build, to make laptop more quiet
 
 # asdf
@@ -11,7 +13,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, lib, modulesPath, ... }:
+{ config, pkgs, lib, modulesPath, inputs, ... }:
 
 {
 
@@ -106,17 +108,41 @@
 
   ]; # nixpkgs.overlays
 
+# https://nixos.wiki/wiki/Storage_optimization
+nix.gc = {
+  automatic = true;
+  dates = "weekly";
+  options = "--delete-older-than 30d";
+};
 
   # Override select packages to use the unstable channel
-  nixpkgs.config.packageOverrides = pkgs: rec {
-    #nixpkgs.config.packageOverrides = pkgs: let final = pkgs.pkgs; in { # pkgs/final = prev/final = super/self
-  }; # packageOverrides
+/* no effect -> move to flake.nix
+  nixpkgs.config.packageOverrides = pkgs: {
+    nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/1ed7701bc2f5c91454027067872037272812e7a3.tar.gz") {
+      inherit pkgs;
+    };
+  };
+*/
 
   # dont build nixos-manual-html (etc)
   documentation.doc.enable = false;
   documentation.nixos.enable = false;
 
-  services.sshd.enable = true;
+  #services.sshd.enable = true;
+
+# https://nixos.wiki/wiki/SSH_public_key_authentication
+services.openssh = {
+  enable = true;
+  settings = {
+    # require public key authentication for better security
+    PasswordAuthentication = false;
+    KbdInteractiveAuthentication = false;
+    #PermitRootLogin = "yes";
+  };
+};
+
+  # ipfs
+  #services.kubo.enable = true;
 
   # nixpkgs/nixos/modules/services/databases/postgresql.nix
   # nixpkgs/pkgs/servers/sql/postgresql
@@ -148,6 +174,19 @@
     ];
   */
 
+  # my ISP (deutsche telekom) is censoring some websites via DNS. fuck censorship.
+  # FIXME not used in /etc/resolv.conf. blame VPN?
+  networking.nameservers = [
+    # cloudflare DNS
+    "1.1.1.1"
+    "1.0.0.1"
+    # google DNS
+    "4.4.4.4"
+    "8.8.4.4"
+    # ?
+    #"9.9.9.9"
+  ];
+
   nixpkgs.config.permittedInsecurePackages = [
     "nodejs-12.22.12" # TODO who needs nodejs 12? pkgs.nodejs-12_x
   ];
@@ -156,11 +195,14 @@
     #"osu-lazer"
     #"flashplayer"
     #"vscode" # -> vscodium
+    "rar"
     "unrar"
     "brgenml1lpr" # brother printer
     "brother-hll3210cw" # brother printer
-    "cups-kyocera-ecosys-m552x-p502x" # kyocera p5021cdn printer
-    "cnijfilter2" # canon printer: cnijfilter2-6.10
+# hll6400dwlpr-3.5.1-1
+"brother-hll6400dw-lpr"
+    #"cups-kyocera-ecosys-m552x-p502x" # kyocera p5021cdn printer
+    #"cnijfilter2" # canon printer: cnijfilter2-6.10
     "font-bh-lucidatypewriter-75dpi" # https://github.com/NixOS/nixpkgs/issues/99014
   ];
 
@@ -178,7 +220,6 @@
     };
   */
 
-
   /* moved to flake.nix
     # flakes
     nix.package = pkgs.nixUnstable; # https://nixos.wiki/wiki/Flakes
@@ -192,12 +233,23 @@
     keep-derivations = true
   */
 
+  # https://github.com/NixOS/nix/pull/7283
+/*
+  nix.package = pkgs.nixUnstable.overrideAttrs (old: {
+    src = inputs.nixSource;
+    #version = "2.13.0";
+    # some tests are failing because of extra debug output
+    #doCheck = false; # no effect
+    doInstallCheck = false;
+  });
+*/
+  #nix.package = pkgs.nixVersions.nix_2_7;
 
   # https://nixos.wiki/wiki/Distributed_build
   # TODO distcc??
   #     nix.buildMachines = if false then [
   nix.buildMachines =
-    if false then [
+    if true then [] else [
       #/xx* laut
       {
         #hostName = "laptop2";
@@ -222,7 +274,7 @@
         mandatoryFeatures = [ ];
         }
       */
-    ] else [ ];
+    ];
 
   nix.distributedBuilds = true;
   # optional, useful when the builder has a faster internet connection than yours
@@ -230,16 +282,12 @@
   #       builders-use-substitutes = true
   #'';
 
-  /*
   networking.extraHosts =
     ''
-      192.168.1.191 laptop2
-      192.168.1.179 laptop3
-      127.0.0.1 laptop1 nixos-cache.laptop1
-
-      73.157.50.82 jonringer
+      192.168.1.191 laptop1
+      192.168.1.120 laptop2
+      #73.157.50.82 jonringer
     '';
-  */
 
   /*
   services.nix-serve = {
@@ -400,6 +448,8 @@
   # breaks GTK apps: inkscape evolution
   services.xserver.desktopManager.plasma5.enable = true;
   # broken since setting dpi to 144 ... login hangs with black screen
+  # broken. desktop hangs again and again ...
+  # -> $HOME/bin/plasmashell-restart.sh
 
   # xfce desktop
   # FIXME keeps crashing over night
@@ -547,13 +597,22 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  # journalctl --catalog --follow --unit=cups
+  services.printing.logLevel = "debug";
+
+  # discover network printers
+  services.avahi.enable = true;
+  services.avahi.nssmdns = true;
+  # discover wifi printers
+  services.avahi.openFirewall = true;
+
   #services.printing.extraConf = ''LogLevel debug'';
   # systemctl status -l cups.service
 
   services.printing.drivers =
     let
       # TODO:    nur.repos.milahu.brother-hll3210cw # brother HL-L3210CW
-      brother-hll3210cw = (pkgs.callPackage /home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/brother-hll3210cw/default.nix { });
+      #brother-hll3210cw = (pkgs.callPackage /home/user/src/nixos/milahu--nixos-packages/nur-packages/pkgs/brother-hll3210cw/default.nix { });
     in
     [
       #    pkgs.gutenprint
@@ -561,17 +620,24 @@
       #pkgs.hplip pkgs.hplipWithPlugin # hp
       #pkgs.samsungUnifiedLinuxDriver pkgs.splix # samsung
 
-      pkgs.brlaser # brother
+      pkgs.brlaser # brother # not?
       #    brother-hll3210cw
       pkgs.brgenml1lpr # brother # TODO
 
-      # TODO
+# hll6400dwlpr-3.5.1-1
+/*
+(pkgs.callPackage /home/user/src/nixpkgs/brother-hl-l6400dw/nixpkgs/pkgs/misc/cups/drivers/brother/hll6400dw/default.nix {}).driver
+(pkgs.callPackage /home/user/src/nixpkgs/brother-hl-l6400dw/nixpkgs/pkgs/misc/cups/drivers/brother/hll6400dw/default.nix {}).cupswrapper
+*/
+(pkgs.callPackage /home/user/src/nixpkgs/brother-hl-l6400dw/nixpkgs/pkgs/misc/cups/drivers/brother/hll6400dw/default.nix {})
+
+      # samsung
       pkgs.gutenprint
       pkgs.gutenprintBin
 
-      pkgs.cups-kyocera-ecosys-m552x-p502x # kyocera p5021cdn
+      #pkgs.cups-kyocera-ecosys-m552x-p502x # kyocera p5021cdn
 
-      #    pkgs.cnijfilter2 # filter program for canon pixma g5050, etc
+      #pkgs.cnijfilter2 # filter program for canon pixma g5050, etc
       #nixpkgs-2021-04-19.cnijfilter2 # filter program for canon pixma g5050, etc
 
       #canon-cups-ufr2
@@ -636,7 +702,7 @@
   # https://github.com/mrhavens/Dedockify
   # https://github.com/CenturyLinkLabs/dockerfile-from-image
   # -> reverse-engineer https://hub.docker.com/layers/sharelatex/sharelatex
-  virtualisation.docker.enable = true;
+  #virtualisation.docker.enable = true;
 
   /*
     virtualisation = {
@@ -912,18 +978,6 @@
         include chromium.profile
         ```
       */
-      /*
-        librewolf = {
-        executable = "${lib.getBin pkgs.unstable.librewolf-wayland}/bin/librewolf"; # FIXME
-        profile = "${pkgs.firejail}/etc/firejail/librewolf.profile";
-        extraArgs = [ "--ignore=private-dev" ];
-        };
-        signal-desktop = {
-        executable = "${lib.getBin pkgs.signal-desktop}/bin/signal-desktop --enable-features=UseOzonePlatform --ozone-platform=wayland"; # FIXME
-        profile = "${pkgs.firejail}/etc/firejail/signal-desktop.profile";
-        extraArgs = [ "--env=LC_ALL=C" ]; # FIXME
-        };
-      */
     };
   };
 
@@ -978,7 +1032,7 @@
       }))
     */
 
-    gnome3.adwaita-icon-theme
+    #gnome3.adwaita-icon-theme
     #gnomeExtensions.appindicator
 
     # all gtk themes
@@ -1021,7 +1075,7 @@
     wget
     curl
     curl.dev # curl-config, needed by pyload
-    speedtest-cli
+    #speedtest-cli
 
     #ipfs
     #ipfs-desktop # TODO undefined
@@ -1029,7 +1083,7 @@
     # chat
     #element-desktop
     #tdesktop # telegram
-    #hexchat # irc
+    hexchat # irc
     #whatsapp-for-linux
 
     linuxPackages.cpupower
@@ -1038,13 +1092,20 @@
     cached-nix-shell # Instant startup time for nix-shell
 
     gimp
-    inkscape
+
+    #inkscape
+    # https://github.com/NixOS/nixpkgs/issues/197044
+    (inkscape-with-extensions.override {
+      inkscapeExtensions = with inkscape-extensions; [
+        applytransforms
+      ];
+    })
 
     strawberry # music player
     #calibre # ebook converter
 
     screen
-    #tmux
+    tmux
 
     mmv # multi move
     pv # pipe view (progress, rate)
@@ -1054,7 +1115,7 @@
     unixtools.xxd # encode/decode hex strings to/from bytes
     moreutils # sponge: soak up stdin/write to file
     unzip
-    #html-tidy
+    #html-tidy # old shit
     bridge-utils # brctl -> network bridges
 
     #monero-gui monero
@@ -1071,6 +1132,8 @@
     p7zip
     unrar # unfree
 
+sox # audio tool
+
     gwenview # image viewer
 
     git
@@ -1080,17 +1143,51 @@
 
     #xfce.orage # calendar. TODO import old data! from ~/user-old
 
-    spectacle # screenshot?
+    spectacle # screenshot
 
     cloc # count lines of code
 
-    vscodium
+#vscode
+
+    # vscodium 1.72
+    # https://github.com/NixOS/nixpkgs/pull/194860
+    # TODO build from source
+    # /home/user/src/nixpkgs/pkgs/applications/editors/vscode/oss.nix
+    # /home/user/src/nixpkgs/vscode.md
+    (vscodium.overrideAttrs (old: (
+      let
+        sha256 = {
+          x86_64-linux = "1r7k20j51z0y967qm0fnajf1lwjsgxj81p0qh46hsy76q3d793wm";
+          x86_64-darwin = "1s7k06sm7890bkim6h1vrywcia8fayvmpy1cchy5kvz2pks9y9pf";
+          aarch64-linux = "0san532jc3f9k23dlccb4b3pf7b97jylzdvb8l9mq4a18s3rg5s2";
+          aarch64-darwin = "1zzpjgvxam4pmp3wh8aj9cly46m74h93zn21ql7wy347cpzx4b05";
+          armv7l-linux = "1phaaq4kg9cn1aq3jg9v1a98iwgvc31s6d0r5w3nzn2wmfbr4pjz";
+        }.${system} or throwSystem;
+        plat = {
+          x86_64-linux = "linux-x64";
+          x86_64-darwin = "darwin-x64";
+          aarch64-linux = "linux-arm64";
+          aarch64-darwin = "darwin-arm64";
+          armv7l-linux = "linux-armhf";
+        }.${system} or throwSystem;
+        archive_fmt = if stdenv.isDarwin then "zip" else "tar.gz";
+      in
+      rec {
+        version = "1.72.0.22279";
+        src = fetchurl {
+          url = "https://github.com/VSCodium/vscodium/releases/download/${version}/VSCodium-${plat}-${version}.${archive_fmt}";
+          inherit sha256;
+        };
+      })))
+
     clang-tools # clangd = c/cpp lang server
-    rnix-lsp # nix lang server
+    #rnix-lsp # nix lang server for vscodium # old? build from git
 
-    meld # Visual diff and merge tool
+    #meld # Visual diff and merge tool
 
-    okular # document viewer
+    okular # document viewer, ebook reader
+    #libreoffice
+    #abiword
 
     # ocr
     gImageReader
@@ -1099,12 +1196,13 @@
     hunspellDicts.en_US-large
 
     # web browsers
-    ungoogled-chromium
-    librewolf # firefox with better privacy
+    ungoogled-chromium # chrome. TODO perfect dark mode theme, like shadowfox for firefox
+    #librewolf # firefox with better privacy
     #firefox # con: censorship?
+    #shadowfox # perfect dark mode theme for firefox. install theme with shadowfox-updater # unfree
 
     #evolution # email
-    #hydroxide # email bridge/proxy for protonmail.com
+    #hydroxide # email bridge/proxy for protonmail.com. ~/bin/_protonmail_bridge # broken?
 
     #nixpkgs-2021-04-19.tor-browser-bundle-bin
     tor-browser-bundle-bin # TODO use cached
@@ -1165,12 +1263,12 @@
 
     nftables # for wireguard
 
-    qbittorrent
+    qbittorrent # TODO vpn only for this app
     #jdownloader # ddl manager
 
     gst_all_1.gst-plugins-good # gstreamer plugins
 
-    cachix # cachix use nix-community
+    #cachix # cachix use nix-community
     # Enable the Nix Community cache:
     # https://github.com/nix-community/redoxpkgs
 
@@ -1181,6 +1279,15 @@
     nmap # network port scanner
 
     bintools-unwrapped # nm strings ...
+    file
+    binwalk
+    python3.pkgs.matplotlib # FIXME not found by binwalk
+    #gdb
+    strace
+    ltrace
+    gdb
+    binwalk
+    lsof
 
     #ruplacer # replace fixed strings. similar: rpl
 
@@ -1190,7 +1297,30 @@
 
     thinkfan # laptop fan control
     lm_sensors # sensors: temperature ...
+    smartmontools # smartctl: hard drive health status
 
-    #direnv # use .envrc files
+    direnv # use .envrc files
+
+    # /home/user/src/wireguard/pia-foss/manual-connections/python-piavpn/
+    python3 python3.pkgs.cerberus python3.pkgs.pyaml python3.pkgs.requests python3.pkgs.tzlocal python3.pkgs.async-timeout python3.pkgs.pygeoip geolite-legacy
+
+    xclip
+
+    libjpeg # jpegtran, lossless jpeg transforms
+
+    rar
+    unrar
+
+    nixpkgs-fmt
+
+    wine # for ida.exe
+
+    #github-desktop
+
+    qt6.qttools # designer
+    qt6.qttools.dev # designer
+
+    patchelf
+
   ];
 }

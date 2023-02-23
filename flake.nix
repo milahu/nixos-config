@@ -26,22 +26,41 @@ nixos https://nixos.org/channels/nixos-21.05
   #inputs.nixpkgs.url = "github:NixOS/nixpkgs/4ca69abaadb6593995da90eab8f5d5faadf06a57"; # nixpkgs-unstable-2022-06-01
   #inputs.nixpkgs.url = "github:NixOS/nixpkgs/d4f5738137891301b25081f33c493ee033353c8b"; # nixpkgs-unstable-2022-06-08
   #inputs.nixpkgs.url = "github:NixOS/nixpkgs/12363fb6d89859a37cd7e27f85288599f13e49d9"; # nixpkgs-unstable-2022-08-03
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/b00aa8ded743862adc8d6cd3220e91fb333b86d3"; # nixpkgs-unstable-2022-08-13
+  #inputs.nixpkgs.url = "github:NixOS/nixpkgs/b00aa8ded743862adc8d6cd3220e91fb333b86d3"; # nixpkgs-unstable-2022-08-13
+  #inputs.nixpkgs.url = "github:NixOS/nixpkgs/178fea1414ae708a5704490f4c49ec3320be9815"; # nixos-22.05 2022-09-15
+  #inputs.nixpkgs.url = "github:NixOS/nixpkgs/3dd0d739d2925626d46302b59299ef4c0403e0bc"; # nixpkgs-unstable-2022-10-03
+  #inputs.nixpkgs.url = "github:NixOS/nixpkgs/c45e994e4a94f87079beaa21ac0a4e090f96027e"; # nixpkgs-unstable-2022-09-20
+  #inputs.nixpkgs.url = "github:NixOS/nixpkgs/1e53371bdabd9f3a5f267ccc6af5bab1d289fa69"; # nixpkgs-unstable-2022-11-04
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/2b34f950744ce16fa7e97dad362cda680f59fa4b"; # nixpkgs-unstable-2023-01-23
+
+  # https://github.com/NixOS/nix/pull/7283
+# TODO restore
+  #inputs.nixSource.url = "github:NixOS/nix/62960f32915909a5104f2ca3a32b25fb3cfd34c7";
+
+  # debug; enabling ca-derivations can cause deadlock on "waiting for exclusive access to the Nix store for ca drvs..."
+  # https://github.com/NixOS/nix/issues/6666
+  #inputs.nixSource.url = "github:milahu/nix/d0d73ff53ea296b0e52c1e7cfb8974316b72ba89";
+  inputs.nixSource.url = "github:milahu/nix/204663327a5e4984457e913d8c341275747f4391";
 
   # https://github.com/NixOS/nixpkgs/commits/master
   # https://status.nixos.org/
-  # https://github.com/NixOS/nixpkgs/tree/nixpkgs-unstable
+  # https://github.com/NixOS/nixpkgs/commits/nixpkgs-unstable
 
   # too complex? now using docker for jdownloader
   #inputs.microvm.url = "github:astro/microvm.nix/f3ebf61cb123cdfd27ae9895cd468d67c3a5e112"; # 2022-05-05
 
   #inputs.nur.url = "github:nix-community/NUR";
-  inputs.nur.inputs.nixpkgs.follows = "nixpkgs";
   #inputs.nur.url = "github:nix-community/NUR/fc0758e2f8aa4dac7c4ab42860f07487b1dcadea"; # 2021-11-21
   #inputs.nur.url = "github:nix-community/NUR/bc8d5b8cda77bf9660152b3c781478d5759e5450"; # 2022-02-17
-  inputs.nur.url = "github:nix-community/NUR/4aa31a863e53a91c5148e28e3cc6e407a45a6b73"; # 2022-05-01
+  #inputs.nur.url = "github:nix-community/NUR/4aa31a863e53a91c5148e28e3cc6e407a45a6b73"; # 2022-05-01
+  inputs.nur.url = "github:nix-community/NUR/1ed7701bc2f5c91454027067872037272812e7a3"; # 2023-02-09
+
+  #inputs.kapack.url = "path:/home/auguste/dev/nur-kapack"; # my local nur.repos.kapack
+
   # https://github.com/nix-community/NUR
   # TODO update
+
+  inputs.nur.inputs.nixpkgs.follows = "nixpkgs";
 
   # workaround for https://github.com/NixOS/nix/issues/6572
   #nix.package = pkgs.nixUnstable;
@@ -68,27 +87,67 @@ nixos https://nixos.org/channels/nixos-21.05
 #  outputs = { self, ... }@inputs: with inputs; {
   outputs = { self, ... }@inputs: {
 
-    nixosConfigurations.laptop1 = inputs.nixpkgs.lib.nixosSystem {
+    nixosConfigurations.laptop1 = inputs.nixpkgs.lib.nixosSystem rec {
       system = "x86_64-linux";
       # Things in this set are passed to modules and accessible
       # in the top-level arguments (e.g. `{ pkgs, lib, inputs, ... }:`).
       specialArgs = {
         inherit inputs;
       };
+  #nurpkgs = import inputs.nixpkgs { inherit system; };
+
       modules = [
+
+
+   # https://github.com/nix-community/NUR/issues/254
+       {
+         nixpkgs.config.packageOverrides = pkgs: {
+            nur = import inputs.nur {
+              #inherit pkgs nurpkgs; # error: called with unexpected argument 'nurpkgs'
+              inherit pkgs;
+  nurpkgs = import inputs.nixpkgs { inherit system; };
+              #repoOverrides = { kapack = import kapack { inherit pkgs; }; };
+            };
+          };
+        }
+/*
+   {
+    nixpkgs.overlays = [
+      (final: prev: {
+        nur = import inputs.nur {
+          nurpkgs = prev;
+          pkgs = prev;
+          #repoOverrides = { kapack = import kapack { pkgs = prev; }; };
+        };
+      })
+    ];
+   } 
+*/
+
+        #inputs.nur.nixosModules.nur # error: attribute 'nixosModules' missing
+
+
+
 #/*
         inputs.home-manager.nixosModules.home-manager
 #*/
 
 #            experimental-features = nix-command flakes
 
+        # NOTE "ca-derivations" breaks nix https://github.com/NixOS/nix/issues/6666
+
         ({ pkgs, ... }: {
           nix.extraOptions = ''
-            experimental-features = nix-command flakes recursive-nix impure-derivations
-            # ca-derivations
+            # good
+            #experimental-features = nix-command flakes recursive-nix
+            # bad
+            experimental-features = nix-command flakes recursive-nix ca-derivations
+
+            # force rebuild 2
+
             #system-features = nixos-test benchmark big-parallel kvm recursive-nix
-            keep-outputs = true
-            keep-derivations = true
+            #keep-outputs = true
+            #keep-derivations = true
             #extra-sandbox-paths = /nix/var/cache/ccache /nix/var/cache/sccache
 
             builders-use-substitutes = true
@@ -127,6 +186,7 @@ nix.package = pkgs.nixUnstable.overrideAttrs (old: {
 
   #nix.package = pkgs.nix_2_6;
   #nix.package = pkgs.nixVersions.nix_2_7;
+  # waiting for https://github.com/NixOS/nix/pull/7283
 
 /*
   nix.package = pkgs.nixVersions.nix_2_8.overrideAttrs (drv: rec {
@@ -167,11 +227,14 @@ nix.package =
   # latest version: nix 2.10.3
   #nix.package = pkgs.nixVersions.nix_2_8; # nix (Nix) 2.8.1
 
-  nix.package = pkgs.nix.overrideAttrs (old: {
-    version = "2.11.0-git-53d618414";
-    src = /home/user/src/nix/nix;
-  }); # nix (Nix) 2.8.1
 
+/*
+  nix.package = pkgs.nix.overrideAttrs (old: {
+    version = "2.10.3-git-de439ebba";
+    src = /home/user/src/nix/nix-debug-ca-lock-nix-2.10.3-src-for-system-nix;
+    doInstallCheck = false; # tests fail with custom log messages
+  }); # nix (Nix) 2.8.1
+*/
 
 
 
@@ -270,7 +333,7 @@ pkgs.lib.nixpkgsVersion # deprecated for pkgs.lib.version
 
                   nixpkgs.overlays = [
                     #self.overlay
-                    inputs.nur.overlay
+                    #inputs.nur.overlay
                     # neovim-nightly.overlay
                   ];
 
