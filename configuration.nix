@@ -108,21 +108,31 @@
 
   ]; # nixpkgs.overlays
 
-# https://nixos.wiki/wiki/Storage_optimization
-nix.gc = {
-  automatic = true;
-  dates = "weekly";
-  options = "--delete-older-than 30d";
-};
+  # https://nixos.wiki/wiki/Storage_optimization
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 30d";
+  };
 
   # Override select packages to use the unstable channel
-/* no effect -> move to flake.nix
+  # no effect
+  /*
+  # usage:
+  #   nur.repos.mic92.hello-nur
+  #   nur.repos.milahu.brother-hll5100dn
+  # nur-packages
   nixpkgs.config.packageOverrides = pkgs: {
-    nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/1ed7701bc2f5c91454027067872037272812e7a3.tar.gz") {
+    #nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
+    nur = import (inputs.nur) {
       inherit pkgs;
+      repoOverrides = {
+        milahu = import /home/milahu/src/milahu/nur-packages { inherit pkgs; };
+        # mic92 = import (builtins.fetchTarball "https://github.com/your-user/nur-packages/archive/master.tar.gz") { inherit pkgs; };
+      };
     };
   };
-*/
+  */
 
   # dont build nixos-manual-html (etc)
   documentation.doc.enable = false;
@@ -201,6 +211,7 @@ services.openssh = {
     "brother-hll3210cw" # brother printer
 # hll6400dwlpr-3.5.1-1
 "brother-hll6400dw-lpr"
+"brother-hll5100dn-lpr"
     #"cups-kyocera-ecosys-m552x-p502x" # kyocera p5021cdn printer
     #"cnijfilter2" # canon printer: cnijfilter2-6.10
     "font-bh-lucidatypewriter-75dpi" # https://github.com/NixOS/nixpkgs/issues/99014
@@ -624,12 +635,14 @@ services.openssh = {
       #    brother-hll3210cw
       pkgs.brgenml1lpr # brother # TODO
 
-# hll6400dwlpr-3.5.1-1
-/*
-(pkgs.callPackage /home/user/src/nixpkgs/brother-hl-l6400dw/nixpkgs/pkgs/misc/cups/drivers/brother/hll6400dw/default.nix {}).driver
-(pkgs.callPackage /home/user/src/nixpkgs/brother-hl-l6400dw/nixpkgs/pkgs/misc/cups/drivers/brother/hll6400dw/default.nix {}).cupswrapper
-*/
-(pkgs.callPackage /home/user/src/nixpkgs/brother-hl-l6400dw/nixpkgs/pkgs/misc/cups/drivers/brother/hll6400dw/default.nix {})
+      # hll6400dwlpr-3.5.1-1
+      /*
+      (pkgs.callPackage /home/user/src/nixpkgs/brother-hl-l6400dw/nixpkgs/pkgs/misc/cups/drivers/brother/hll6400dw/default.nix {}).driver
+      (pkgs.callPackage /home/user/src/nixpkgs/brother-hl-l6400dw/nixpkgs/pkgs/misc/cups/drivers/brother/hll6400dw/default.nix {}).cupswrapper
+      */
+      #(pkgs.callPackage /home/user/src/nixpkgs/brother-hl-l6400dw/nixpkgs/pkgs/misc/cups/drivers/brother/hll6400dw/default.nix {})
+      #nur.repos.milahu.brother-hll6400dw
+      nur.repos.milahu.brother-hll5100dn
 
       # samsung
       pkgs.gutenprint
@@ -1154,6 +1167,8 @@ sox # audio tool
     # TODO build from source
     # /home/user/src/nixpkgs/pkgs/applications/editors/vscode/oss.nix
     # /home/user/src/nixpkgs/vscode.md
+vscodium
+/*
     (vscodium.overrideAttrs (old: (
       let
         sha256 = {
@@ -1179,6 +1194,7 @@ sox # audio tool
           inherit sha256;
         };
       })))
+*/
 
     clang-tools # clangd = c/cpp lang server
     #rnix-lsp # nix lang server for vscodium # old? build from git
@@ -1321,6 +1337,9 @@ sox # audio tool
     qt6.qttools.dev # designer
 
     patchelf
+
+# todo
+    #nix-init
 
   ];
 }
