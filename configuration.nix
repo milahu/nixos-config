@@ -2790,7 +2790,7 @@ udp        0      0 84.167.63.83:6881       0.0.0.0:*                           
     #potrace
 
     strawberry # music player
-    #mixxx # music player, DJ tool
+    mixxx # music player, DJ tool
     audacity # audio editor
     sox # audio tool
     bpm-tools
