@@ -3,7 +3,7 @@
 # to /etc/nixos/configuration.nix instead.
 { config, lib, pkgs, modulesPath, ... }:
 
-{
+rec {
   imports =
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
@@ -13,15 +13,34 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
+  # TODO group boot.loader.grub.device and fileSystems."/".device
+  #boot.loader.grub.device = "/dev/disk/by-id/ata-CT1000MX500SSD1_2051E4DE8391"; # old SSD 1TB
+
+  boot.loader.grub.device = "/dev/disk/by-id/ata-Samsung_SSD_870_QVO_2TB_S5RPNF0R540347T"; # SSD 2024-01-06 2TB
+
   fileSystems."/" =
     {
-      #device = "/dev/disk/by-uuid/2e0a16b9-e026-4e69-8640-a2b2ce6d45bf"; # old SSD (240 GB)
-      device = "/dev/disk/by-uuid/141c3965-7393-4459-ab03-ae90173d984f";
+      # TODO group boot.loader.grub.device and fileSystems."/".device
+      #device = "/dev/disk/by-uuid/2e0a16b9-e026-4e69-8640-a2b2ce6d45bf"; # old SSD 240GB
+      #device = "/dev/disk/by-uuid/141c3965-7393-4459-ab03-ae90173d984f"; # old SSD 1TB
+
+      device = boot.loader.grub.device + "-part1"; # first partition: usually /dev/sda1
+
       fsType = "ext4";
+      options = [
+        "rw"
+        # TODO why not data=writeback
+        "data=ordered" # faster than journal, slower than writeback
+        #"relatime" # slower than noatime, update atime only after file was modified
+        "noatime"
+        "nodiratime" # dont write access time -> faster
+      ];
     };
 
   swapDevices = [
     { device = "/var/swapfile1"; size = (16 * 1024); } # 16 GB swap file
   ];
 
+  # avoid swapping for better performance
+  boot.kernel.sysctl."vm.swappiness" = 10; # default: 60
 }

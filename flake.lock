@@ -7,127 +7,77 @@
         ]
       },
       "locked": {
-        "lastModified": 1637249535,
-        "narHash": "sha256-RCatEYQ+uqsZOZpN4ZOtSoO7CJTiQpHNdPjUA0jtejw=",
+        "lastModified": 1715486357,
+        "narHash": "sha256-4pRuzsHZOW5W4CsXI9uhKtiJeQSUoe1d2M9mWU98HC4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "2452979efe92128b03e3c27567267066c2825fab",
+        "rev": "44677a1c96810a8e8c4ffaeaad10c842402647c1",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "2452979efe92128b03e3c27567267066c2825fab",
-        "type": "github"
-      }
-    },
-    "lowdown-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1633514407,
-        "narHash": "sha256-Dw32tiMjdK9t3ETl5fzGrutQTzh2rufgZV4A/BbxuD4=",
-        "owner": "kristapsdz",
-        "repo": "lowdown",
-        "rev": "d2c2b44ff6c27b936ec27358a2653caaef8f73b8",
-        "type": "github"
-      },
-      "original": {
-        "owner": "kristapsdz",
-        "repo": "lowdown",
-        "type": "github"
-      }
-    },
-    "nixSource": {
-      "inputs": {
-        "lowdown-src": "lowdown-src",
-        "nixpkgs": "nixpkgs",
-        "nixpkgs-regression": "nixpkgs-regression"
-      },
-      "locked": {
-        "lastModified": 1671441329,
-        "narHash": "sha256-uB9yv0T0Na0fs5A4Y61QHlpWyhXH6170oZ2in5YdTas=",
-        "owner": "milahu",
-        "repo": "nix",
-        "rev": "204663327a5e4984457e913d8c341275747f4391",
-        "type": "github"
-      },
-      "original": {
-        "owner": "milahu",
-        "repo": "nix",
-        "rev": "204663327a5e4984457e913d8c341275747f4391",
         "type": "github"
       }
     },
     "nixpkgs": {
       "locked": {
-        "lastModified": 1657693803,
-        "narHash": "sha256-G++2CJ9u0E7NNTAi9n5G8TdDmGJXcIjkJ3NF8cetQB8=",
+        "lastModified": 1715653339,
+        "narHash": "sha256-7lR9tpVXviSccl07GXI0+ve/natd24HAkuy1sQp0OlI=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "365e1b3a859281cf11b94f87231adeabbdd878a2",
+        "rev": "abd6d48f8c77bea7dc51beb2adfa6ed3950d2585",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-22.05-small",
+        "ref": "nixpkgs-unstable",
         "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-regression": {
-      "locked": {
-        "lastModified": 1643052045,
-        "narHash": "sha256-uGJ0VXIhWKGXxkeNnq4TvV3CIOkUJ3PAoLZ3HMzNVMw=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "215d4d0fd80ca5163643b03a33fde804a29cc1e2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "215d4d0fd80ca5163643b03a33fde804a29cc1e2",
-        "type": "github"
-      }
-    },
-    "nixpkgs_2": {
-      "locked": {
-        "lastModified": 1674461971,
-        "narHash": "sha256-7U0NLQsh6mLEMyFcMs/+LO70EbiGvjnWgsoAoK87xsU=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "2b34f950744ce16fa7e97dad362cda680f59fa4b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "2b34f950744ce16fa7e97dad362cda680f59fa4b",
         "type": "github"
       }
     },
     "nur": {
       "locked": {
-        "lastModified": 1675950569,
-        "narHash": "sha256-v6p+D8e7GVcAlVoJGrAqjwjfAglKS9+GzbQFxd8d0Rc=",
+        "lastModified": 1715777889,
+        "narHash": "sha256-Ano+4M2xb91QjQ8Ymx4aAIZ1XjhPULSpwd/S2yEvDds=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "1ed7701bc2f5c91454027067872037272812e7a3",
+        "rev": "2d6fba7ccd75b46ef12b797fd888f4d9ad80cbc6",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "1ed7701bc2f5c91454027067872037272812e7a3",
         "type": "github"
+      }
+    },
+    "nur-packages-milahu": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "dirtyRev": "7ef65e078e3a5e378a487cf537fd4dd7499eedc1-dirty",
+        "dirtyShortRev": "7ef65e0-dirty",
+        "lastModified": 1724740343,
+        "narHash": "sha256-MUxRVmHAVoD75QuXzafyLiS7Sq5nQguCVSFSYAWHHXc=",
+        "submodules": true,
+        "type": "git",
+        "url": "file:///home/user/src/milahu/nur-packages"
+      },
+      "original": {
+        "submodules": true,
+        "type": "git",
+        "url": "file:///home/user/src/milahu/nur-packages"
       }
     },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
-        "nixSource": "nixSource",
-        "nixpkgs": "nixpkgs_2",
-        "nur": "nur"
+        "nixpkgs": "nixpkgs",
+        "nur": "nur",
+        "nur-packages-milahu": "nur-packages-milahu"
       }
     }
   },

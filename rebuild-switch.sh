@@ -2,7 +2,7 @@
 
 # TODO add symlink /etc/nixos/nixpkgs to the currently used nixpkgs
 
-#cd "$(dirname "$0")"
+cd "$(dirname "$0")"
 #sudo nixos-rebuild switch --flake .#$(hostname) # not needed?
 
 #sudo nixos-rebuild switch --flake /etc/nixos#$(hostname) # not needed?
@@ -27,6 +27,15 @@ echo "maybe run:"
 echo "nix-store --verify --repair"
 echo "... to fix store after writable-nix-store.js"
 
+set -x
+grep nur-packages-milahu flake.nix
+
+echo updating flake.lock
+flake_lock_bak=flake.lock.bak-$(date +%F-%H-%M-%S)
+sudo cp flake.lock $flake_lock_bak
+sudo nix flake lock --update-input nur-packages-milahu
+diff -s -u $flake_lock_bak flake.lock
+
 # this should be enough to build nixos flake config
 set -x
-sudo nixos-rebuild switch $opts --print-build-logs "$@"
+sudo nixos-rebuild switch $opts --print-build-logs --show-trace "$@"
