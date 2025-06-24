@@ -239,6 +239,43 @@
   # ?
   security.chromiumSuidSandbox.enable = true;
 
+  # https://wiki.nixos.org/wiki/Laptop#Hybrid_graphics
+  # Nvidia Configuration
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  # Enable OpenGL
+  hardware.graphics.enable = true;
+
+  # Optionally, you may need to select the appropriate driver version for your specific GPU.
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+
+  # nvidia-drm.modeset=1 is required for some wayland compositors, e.g. sway
+  hardware.nvidia.modesetting.enable = true;
+
+  hardware.nvidia.powerManagement.enable = false;
+  hardware.nvidia.powerManagement.finegrained = false;
+  hardware.nvidia.open = false;
+  hardware.nvidia.nvidiaSettings = true;
+
+  hardware.nvidia.prime = {
+    sync.enable = true;
+
+    # this requires to modify bios config
+    # from "discrete graphics" to "switchable graphics"
+    # otherwise "lspci | grep VGA" shows only one entry
+
+    # # lspci | grep VGA
+    # 01:00.0 VGA compatible controller: NVIDIA Corporation TU117M [GeForce GTX 1650 Ti Mobile] (rev a1)
+    # 04:00.0 VGA compatible controller: Advanced Micro Devices, Inc. [AMD/ATI] Renoir [Radeon Vega Series / Radeon Vega Mobile Series] (rev c6)
+
+    # Bus ID of the NVIDIA GPU. You can find it using lspci, either under 3D or VGA
+    nvidiaBusId = "PCI:1:0:0";
+
+    # Bus ID of the Intel GPU. You can find it using lspci, either under 3D or VGA
+    # option "amdBusId" does not exist
+    intelBusId = "PCI:4:0:0";
+  };
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
