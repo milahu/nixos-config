@@ -2326,9 +2326,10 @@ nix.binaryCaches = [
     enableSSHSupport = true; # /etc/ssh/ssh_config
     # fix? gpg: agent_genkey failed: No pinentry
     # todo: also add pinentry to env pkgs
-    pinentryPackage = pkgs.pinentry-qt; # kde
+    #pinentryPackage = pkgs.pinentry-qt; # kde
     #pinentryPackage = pkgs.pinentry-gnome3; # gnome
     #pinentryPackage = pkgs.pinentry-gtk2; # gnome
+    #pinentryPackage = pkgs.pinentry-curses;
   };
 
   # List services that you want to enable:
@@ -3475,7 +3476,7 @@ udp        0      0 84.167.63.83:6881       0.0.0.0:*                           
 
     #nano-wallet # nanocoin, nanocurrency
     nur.repos.milahu.nano-node
-    monero monero-gui
+    monero-gui
     # TODO haveno
 
     # seq 10 | datamash sum 1
@@ -3530,6 +3531,9 @@ udp        0      0 84.167.63.83:6881       0.0.0.0:*                           
     torrenttools
 
     nur.repos.milahu.spotify-adblock
+
+    gnupg # gpg
+    pinentry-qt
 
   ];
 }
