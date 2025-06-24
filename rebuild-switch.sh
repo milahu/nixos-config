@@ -1,6 +1,43 @@
 #!/usr/bin/env bash
 
-# from flakes to non-flakes
-export NIX_PATH="$NIX_PATH:nixos-config=/etc/nixos/configuration.nix"
+# TODO add symlink /etc/nixos/nixpkgs to the currently used nixpkgs
 
-exec sudo nixos-rebuild switch
+cd "$(dirname "$0")"
+#sudo nixos-rebuild switch --flake .#$(hostname) # not needed?
+
+#sudo nixos-rebuild switch --flake /etc/nixos#$(hostname) # not needed?
+#sudo nixos-rebuild dry-activate --flake /etc/nixos#$(hostname) # not needed?
+#sudo env -u NIX_PATH nixos-rebuild switch --flake /etc/nixos#$(hostname) # not needed?
+#sudo nixos-rebuild switch --flake /etc/nixos#$(hostname) # not needed?
+
+nix="nix --extra-experimental-features nix-command --extra-experimental-features flakes"
+
+opts=""
+
+opts+=' --impure' # allow acces to /home
+
+# FIXME doublequotes are passed as string literals ... -> TODO use bash arrays
+opts+=' --builders ""' # disable builders
+#opts+=' --builders jonringer'
+
+#opts+=' --flake /home/user/src/nixos/nixos-config'
+
+opts+=' -v' # verbose
+#opts+=' -vvvv' # debug
+
+echo "maybe run:"
+echo "nix-store --verify --repair"
+echo "... to fix store after writable-nix-store.js"
+
+set -x
+grep nur-packages-milahu flake.nix
+
+echo updating flake.lock
+flake_lock_bak=flake.lock.bak-$(date +%F-%H-%M-%S)
+sudo cp flake.lock $flake_lock_bak
+sudo $nix flake lock --update-input nur-packages-milahu
+diff -s -u $flake_lock_bak flake.lock
+
+# this should be enough to build nixos flake config
+set -x
+sudo nixos-rebuild switch $opts --print-build-logs --show-trace "$@"
