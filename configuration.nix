@@ -207,7 +207,7 @@
   services.openssh = {
     enable = true;
     settings =
-    #if true then { } else # INSECURE
+    #if true then { } else # INSECURE: allow password auth
     {
       # require public key authentication for better security
       PasswordAuthentication = false;

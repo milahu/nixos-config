@@ -131,7 +131,7 @@
             #cores = 0 # default: use all cores
             #cores = 4 # too greedy
             #cores = 3 # too greedy?
-            cores = 2 # too slow
+            #cores = 2 # too slow
           '';
           #  require-sigs = false # pull pkgs from jonringer
           #  sandbox = false -> use ccache for qtbase etc
