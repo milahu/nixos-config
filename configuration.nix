@@ -62,7 +62,120 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
-
+  # add printers
+  # https://nixos.wiki/wiki/Printing#Adding_printers
+  hardware.printers = {
+    ensurePrinters = [
+      {
+        name = "Brother_HL-L5100DN_1";
+        location = "Local Printer";
+        deviceUri = "dnssd://Brother%20HL-L5100DN%20series%20%5B30055cb7e60b%5D._ipp._tcp.local/?uuid=e3248000-80ce-11db-8000-30055cb7e60b";
+        model = "brother-HLL5100DN-cups-en.ppd";
+        ppdOptions = {
+          PageSize = "A4";
+        };
+      }
+      {
+        name = "Brother_HL-L5100DN_10";
+        location = "Local Printer";
+        deviceUri = "dnssd://Brother%20HL-L5100DN%20series%20%5Bb42200c3c310%5D._ipp._tcp.local/?uuid=e3248000-80ce-11db-8000-b42200c3c310";
+        model = "brother-HLL5100DN-cups-en.ppd";
+        ppdOptions = {
+          PageSize = "A4";
+        };
+      }
+      {
+        name = "Brother_HL-L5100DN_11";
+        location = "Local Printer";
+        deviceUri = "dnssd://Brother%20HL-L5100DN%20series%20%5Bb42200dd3472%5D._ipp._tcp.local/?uuid=e3248000-80ce-11db-8000-b42200dd3472";
+        model = "brother-HLL5100DN-cups-en.ppd";
+        ppdOptions = {
+          PageSize = "A4";
+        };
+      }
+      {
+        name = "Brother_HL-L5100DN_12";
+        location = "Local Printer";
+        deviceUri = "dnssd://Brother%20HL-L5100DN%20series%20%5B30055cb9745a%5D._ipp._tcp.local/?uuid=e3248000-80ce-11db-8000-30055cb9745a";
+        model = "brother-HLL5100DN-cups-en.ppd";
+        ppdOptions = {
+          PageSize = "A4";
+        };
+      }
+      {
+        name = "Brother_HL-L5100DN_13";
+        location = "Local Printer";
+        deviceUri = "dnssd://Brother%20HL-L5100DN%20series%20%5Bb42200dddbc6%5D._ipp._tcp.local/?uuid=e3248000-80ce-11db-8000-b42200dddbc6";
+        model = "brother-HLL5100DN-cups-en.ppd";
+        ppdOptions = {
+          PageSize = "A4";
+        };
+      }
+      {
+        name = "Brother_HL-L5100DN_14";
+        location = "Local Printer";
+        deviceUri = "dnssd://Brother%20HL-L5100DN%20series._ipp._tcp.local/?uuid=e3248000-80ce-11db-8000-b42200c32d81";
+        model = "brother-HLL5100DN-cups-en.ppd";
+        ppdOptions = {
+          PageSize = "A4";
+        };
+      }
+      {
+        name = "Brother_HL-L5100DN_15";
+        location = "Local Printer";
+        deviceUri = "dnssd://Brother%20HL-L5100DN%20series%20%5Bb42200dddca9%5D._ipp._tcp.local/?uuid=e3248000-80ce-11db-8000-b42200dddca9";
+        model = "brother-HLL5100DN-cups-en.ppd";
+        ppdOptions = {
+          PageSize = "A4";
+        };
+      }
+      {
+        name = "Brother_HL-L5100DN_16";
+        location = "Local Printer";
+        deviceUri = "dnssd://Brother%20HL-L5100DN%20series%20%5Bb4220007880b%5D._ipp._tcp.local/?uuid=e3248000-80ce-11db-8000-b4220007880b";
+        model = "brother-HLL5100DN-cups-en.ppd";
+        ppdOptions = {
+          PageSize = "A4";
+        };
+      }
+      {
+        name = "Brother_HL-L5100DN_2";
+        location = "Local Printer";
+        deviceUri = "dnssd://Brother%20HL-L5100DN%20series%20%5B3c2af4accce6%5D._ipp._tcp.local/?uuid=e3248000-80ce-11db-8000-3c2af4accce6";
+        model = "brother-HLL5100DN-cups-en.ppd";
+        ppdOptions = {
+          PageSize = "A4";
+        };
+      }
+      {
+        name = "Brother_HL-L5100DN_4";
+        location = "Local Printer";
+        deviceUri = "dnssd://Brother%20HL-L5100DN%20series%20%5B30055cb0ad6f%5D._ipp._tcp.local/?uuid=e3248000-80ce-11db-8000-30055cb0ad6f";
+        model = "brother-HLL5100DN-cups-en.ppd";
+        ppdOptions = {
+          PageSize = "A4";
+        };
+      }
+      {
+        name = "Brother_HL-L5100DN_5";
+        location = "Local Printer";
+        deviceUri = "dnssd://Brother%20HL-L5100DN%20series%20%5B3c2af4a4b0b2%5D._ipp._tcp.local/?uuid=e3248000-80ce-11db-8000-3c2af4a4b0b2";
+        model = "brother-HLL5100DN-cups-en.ppd";
+        ppdOptions = {
+          PageSize = "A4";
+        };
+      }
+      {
+        name = "Brother_HL-L5100DN_8";
+        location = "Local Printer";
+        deviceUri = "dnssd://Brother%20HL-L5100DN%20series%20%5B30055cb13942%5D._ipp._tcp.local/?uuid=e3248000-80ce-11db-8000-30055cb13942";
+        model = "brother-HLL5100DN-cups-en.ppd";
+        ppdOptions = {
+          PageSize = "A4";
+        };
+      }
+    ];
+  };
 
   # journalctl --catalog --follow --unit=cups
   services.printing.logLevel = "debug";
