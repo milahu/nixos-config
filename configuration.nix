@@ -400,6 +400,53 @@
     intelBusId = "PCI:4:0:0";
   };
 
+  # https://nixos.wiki/wiki/Tor
+  # 127.0.0.1:9050 # SocksPort
+  # 127.0.0.1:9051 # ControlPort
+  # 127.0.0.1:9053 # DNSPort
+  services.tor = {
+    #services.tor.enable = true; # slow (but secure) socks proxy on port 9050: one circuit per destination address
+    enable = true;
+    client = {
+      #services.tor.client.enable = false; # needed for insecure services
+      #services.tor.client.enable = true; # fast (but risky) socks proxy on port 9063 for https: new circuit every 10 minutes
+      enable = true;
+
+      # this will add:
+      # settings.DNSPort = [{ addr = "127.0.0.1"; port = 9053; }];
+      # settings.AutomapHostsOnResolve = true;
+      dns.enable = true;
+    };
+
+    # disable by-country statistics
+    enableGeoIP = false;
+
+    # FIXME enable tor relay
+    # TODO open port in router
+    openFirewall = true;
+    # [warn] Tor is currently configured as a relay and a hidden service.
+    # That's not very secure: you should probably run your hidden service in a separate Tor process, at least
+    # https://bugs.torproject.org/tpo/core/tor/8742
+
+    settings.ControlPort = 9051;
+
+    relay = {
+      enable = true;
+      role = "relay";
+      #role = "bridge"; # exit node?
+    };
+    settings = {
+      ContactInfo = "milahu@gmail.com";
+      Nickname = "milahu";
+      # no. port 9001 is taken by services.prometheus
+      #ORPort = 9001;
+      #ORPort = 9002;
+      #ControlPort = 9051;
+      # max: 40 Mbit = 5 MByte
+      BandWidthRate = "1 MBytes";
+    };
+  };
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
