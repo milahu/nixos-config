@@ -178,7 +178,7 @@
   };
 
   # journalctl --catalog --follow --unit=cups
-  services.printing.logLevel = "debug";
+  # services.printing.logLevel = "debug";
 
   # discover network printers
   services.avahi.enable = true;
