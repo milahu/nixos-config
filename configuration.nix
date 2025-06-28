@@ -331,14 +331,25 @@
 
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [
+    80 # http server
+    6969 # qbittorrent tracker
   ];
   networking.firewall.allowedUDPPorts = [
+    # https://stackoverflow.com/questions/323351/does-http-use-udp
+    # the QUIC protocol (which is more strictly a pseudo-transport or a session layer protocol)
+    # does use UDP for carrying HTTP/2.0 traffic
+    # and much of Google's traffic already uses this protocol.
+    # It's currently progressing towards standardisation as HTTP/3.
+    80 # http server
+    6969 # qbittorrent tracker
   ];
   networking.firewall.allowedTCPPortRanges = lib.mkForce [
     { from = 6881; to = 6889; } # torrent default ports
+    { from = 60000; to = 60099; } # torrent
   ];
   networking.firewall.allowedUDPPortRanges = lib.mkForce [
     { from = 6881; to = 6889; } # torrent default ports
+    { from = 60000; to = 60099; } # torrent
   ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
