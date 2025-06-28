@@ -465,6 +465,81 @@
     })
   ];
 
+  # https://nixos.wiki/wiki/Nginx
+  services.nginx = {
+    enable = true;
+    package = pkgs.nginx.overrideAttrs (oldAttrs: {
+      patches = oldAttrs.patches ++ [
+        # make autoindex faster
+        # https://superuser.com/questions/1777777/nginx-autoindex-is-blocking-io-on-listing-files/1907365#1907365
+        # https://github.com/milahu/nginx/tree/autoindex-nostat
+        (pkgs.fetchurl {
+          url = "https://github.com/milahu/nginx/commit/86d0084b5c7416ea9cc63767e54f59c3b81988a4.patch";
+          hash = "sha256-hhkteK29f4jrapcHNyN+9XlPEsR7uoP66hGposIYhE8=";
+        })
+      ];
+    });
+    additionalModules = [
+      # pkgs.nginxModules.pam
+      # pkgs.nur.repos.milahu.nginxModules.fancyindex-nostat # TODO
+      /*
+      (pkgs.nginxModules.fancyindex.overrideAttrs (o: {
+        src = /home/user/src/milahu/ngx-fancyindex;
+      }))
+      */
+      # based on nixpkgs/pkgs/servers/http/nginx/modules.nix
+      /*
+      {
+        name = "fancyindex-nostat";
+        src = /home/user/src/milahu/ngx-fancyindex;
+        /*
+        src = fetchFromGitHub {
+          name = "fancyindex";
+          owner = "aperezdc";
+          repo = "ngx-fancyindex";
+          rev = "v0.5.2";
+          sha256 = "0nar45lp3jays3p6b01a78a6gwh6v0snpzcncgiphcqmj5kw8ipg";
+        };
+        *xxx/
+        meta = with lib; {
+          description = "Fancy index module";
+          homepage = "https://github.com/aperezdc/ngx-fancyindex";
+          license = with licenses; [ bsd2 ];
+          # maintainers = with maintainers; [ aneeshusa ];
+        };
+      }
+      */
+    ];
+    virtualHosts."milahu.duckdns.org" = {
+      # addSSL = true;
+      # enableACME = true;
+      # chmod 0755 /run/media/user
+      # ln -s /run/media/user/WSC14YZM_8TB/cas/ /var/www/milahu.duckdns.org/cas
+      # dyndns: https://www.duckdns.org/
+      root = "/var/www/milahu.duckdns.org";
+      locations."/" = {
+        extraConfig = ''
+          autoindex on;
+          # fancyindex on;
+        '';
+      };
+      locations."/bin" = {
+        # proxy to lighttpd cgi server -> subtitles server
+        extraConfig = ''
+          proxy_http_version 1.1;
+
+          proxy_set_header   X-Forwarded-Host   $http_x_host;
+          proxy_set_header   X-Forwarded-For    $proxy_add_x_forwarded_for;
+          proxy_set_header   X-Real-IP          $remote_addr;
+          proxy_set_header   X-Request-URI    $request_uri;
+          proxy_set_header   X-Forwarded-URI    $request_uri;
+
+          proxy_pass http://127.0.0.1:9591/bin/;
+        '';
+      };
+    };
+  };
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
