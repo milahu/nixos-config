@@ -299,8 +299,8 @@
   ];
 
   # Enable automatic login for the user.
-  services.xserver.displayManager.autoLogin.enable = true;
-  services.xserver.displayManager.autoLogin.user = "user";
+  services.displayManager.autoLogin.enable = true;
+  services.displayManager.autoLogin.user = "user";
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
