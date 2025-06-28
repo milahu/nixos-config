@@ -447,6 +447,24 @@
     };
   };
 
+  # https://discourse.nixos.org/t/how-to-create-files-in-the-etc-udev-rules-d-directory/11929/11
+  services.udev.packages = [
+    # mount drives at /media/$filesystem_name with access for all users
+    # /run/media/$USER has mode 0700
+    # https://unix.stackexchange.com/questions/473174/configure-udisks-permission
+    (pkgs.writeTextFile {
+      name = "udisks2-rules-share-mounts";
+      text = ''
+        # UDISKS_FILESYSTEM_SHARED
+        # ==1: mount filesystem to a shared directory (/media/$filesystem_name)
+        # ==0: mount filesystem to a private directory (/run/media/$USER/$filesystem_name)
+        # see also: man udisks
+        ENV{ID_FS_USAGE}=="filesystem|other|crypto", ENV{UDISKS_FILESYSTEM_SHARED}="1"
+      '';
+      destination = "/etc/udev/rules.d/99-udisks2.rules";
+    })
+  ];
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
