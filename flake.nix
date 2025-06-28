@@ -11,14 +11,16 @@
 
   # https://github.com/nix-community/NUR/issues/254#issuecomment-1443739510
   # this breaks when the last component of the path is a symlink
-  #inputs.nur-packages-milahu.url = "path:/home/user/src/milahu/symlink-to-nur-packages";
   #inputs.nur-packages-milahu.url = "git+file:///home/user/src/milahu/nur-packages?shallow=true";
   # need submodules=1 for npmlock2nix
   # FIXME error: repository path '/home/user/src/milahu/nur-packages' is not owned by current user
-  /*
-  inputs.nur-packages-milahu.url = "git+file:///home/user/src/milahu/nur-packages?submodules=1";
+  # https://github.com/NixOS/nix/issues/10202
+  # fix:
+  # sudo git config --global --add safe.directory /home/user/src/milahu/nur-packages
+  # sudo git config --global --add safe.directory "*"
+  # inputs.nur-packages-milahu.url = "git+file:///home/user/src/milahu/nur-packages?submodules=1";
+  inputs.nur-packages-milahu.url = "git+file:///home/user/src/milahu/nur-packages?submodules=1&shallow=true";
   inputs.nur-packages-milahu.inputs.nixpkgs.follows = "nixpkgs";
-  */
 
   /*
   inputs.nur-packages-wolfangaukang.url = "git+https://codeberg.org/wolfangaukang/nix-agordoj.git";
@@ -56,9 +58,7 @@
             inherit pkgs nurpkgs;
             repoOverrides = {
               # FIXME not working. error: attribute 'subdl' missing
-# TODO restore
-#              milahu = import inputs.nur-packages-milahu { inherit pkgs; };
-              #milahu-local = import inputs.nur-packages-milahu { inherit pkgs; };
+              milahu = import inputs.nur-packages-milahu { inherit pkgs; };
               # test https://codeberg.org/wolfangaukang/nix-agordoj/issues/82
               #wolfangaukang2 = import inputs.nur-packages-wolfangaukang { inherit pkgs; };
             };
