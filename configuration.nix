@@ -465,6 +465,11 @@
     })
   ];
 
+  systemd.tmpfiles.rules = [
+    # create /media directory for udisks2-rules-share-mounts
+    "d /media 0755 root root 99999y"
+  ];
+
   # https://nixos.wiki/wiki/Nginx
   services.nginx = {
     enable = true;
