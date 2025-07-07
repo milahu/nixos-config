@@ -463,11 +463,29 @@
       '';
       destination = "/etc/udev/rules.d/99-udisks2.rules";
     })
+    # BFQ (Budget Fair Queueing)
+    # https://www.kernel.org/doc/html/latest/block/bfq-iosched.html
+    # https://github.com/mpv-player/mpv/issues/634#issuecomment-217178972
+    # https://www.reddit.com/r/NixOS/comments/aozsjb/someone_running_linuxck_or_bfq_ioscheduler_on/
+    # https://unix.stackexchange.com/questions/375600/how-to-enable-and-use-the-bfq-scheduler
+    # apply without reboot: sudo modprobe bfq && sudo udevadm control --reload && sudo udevadm trigger
+    # see current scheduler: sudo cat /sys/block/sda/queue/scheduler
+    (pkgs.writeTextFile {
+      name = "udisks2-rules-bfq-scheduler";
+      text = ''
+        ACTION=="add|change", KERNEL=="sd*[!0-9]|sr*", ATTR{queue/scheduler}="bfq"
+      '';
+      destination = "/etc/udev/rules.d/60-scheduler.rules";
+    })
   ];
 
   systemd.tmpfiles.rules = [
     # create /media directory for udisks2-rules-share-mounts
     "d /media 0755 root root 99999y"
+  ];
+
+  boot.kernelModules = [
+    "bfq"
   ];
 
   # https://nixos.wiki/wiki/Nginx
