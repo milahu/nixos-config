@@ -329,6 +329,9 @@
     };
   };
 
+  # monitor network speed and traffic
+  services.vnstat.enable = true;
+
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [
     80 # http server
